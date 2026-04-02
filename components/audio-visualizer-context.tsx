@@ -196,12 +196,6 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
   const mountedRef = React.useRef(false);
   const smoothedRef = React.useRef<AudioEnergy>(DEFAULT_ENERGY);
 
-  const resumeAudio = React.useCallback(() => {
-    if (audioContextRef.current?.state === "suspended") {
-      void audioContextRef.current.resume();
-    }
-  }, []);
-
   const setupAnalyser = React.useCallback((element: HTMLMediaElement) => {
     const engine = getAudioEngine();
     if (!engine) {
@@ -243,14 +237,24 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
     mediaElementRef.current = element;
   }, []);
 
+  const resumeAudio = React.useCallback(() => {
+    const mediaEl = mediaElementRef.current;
+    if (mediaEl && !audioContextRef.current) {
+      setupAnalyser(mediaEl);
+    }
+
+    if (audioContextRef.current?.state === "suspended") {
+      void audioContextRef.current.resume();
+    }
+  }, [setupAnalyser]);
+
   const registerAudioElement = React.useCallback(
     (element: HTMLMediaElement | null) => {
       if (!element) {
         mediaElementRef.current = null;
         return;
       }
-
-      setupAnalyser(element);
+      mediaElementRef.current = element;
 
       const resume = () => {
         resumeAudio();
@@ -266,7 +270,7 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
         element.removeEventListener("keydown", resume);
       };
     },
-    [resumeAudio, setupAnalyser],
+    [resumeAudio],
   );
 
   React.useEffect(() => {

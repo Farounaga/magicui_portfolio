@@ -17,12 +17,39 @@ type MusicPayload = {
 export function MusicVisualizerPlayer() {
   const { registerAudioElement, resumeAudio, showCore, showAnalyzer, toggleCore, toggleAnalyzer } = useAudioVisualizer();
   const audioRef = React.useRef<HTMLAudioElement>(null);
+  const triedTracksRef = React.useRef<Set<string>>(new Set());
 
   const [tracks, setTracks] = React.useState<Track[]>([]);
   const [selected, setSelected] = React.useState("");
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(true);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [playbackError, setPlaybackError] = React.useState("");
+  const [mounted, setMounted] = React.useState(false);
+
+  const jumpToNextTrack = React.useCallback(
+    (failedSrc: string) => {
+      if (!failedSrc || tracks.length < 2) {
+        return;
+      }
+
+      const currentIndex = tracks.findIndex((track) => track.src === failedSrc);
+      if (currentIndex < 0) {
+        return;
+      }
+
+      for (let step = 1; step < tracks.length; step += 1) {
+        const nextIndex = (currentIndex + step) % tracks.length;
+        const candidate = tracks[nextIndex];
+        if (!candidate || triedTracksRef.current.has(candidate.src)) {
+          continue;
+        }
+        setSelected(candidate.src);
+        return;
+      }
+    },
+    [tracks],
+  );
 
   const loadTracks = React.useCallback(async () => {
     setIsLoading(true);
@@ -31,6 +58,8 @@ export function MusicVisualizerPlayer() {
       const data = (await response.json()) as MusicPayload;
       const nextTracks = data.tracks ?? [];
       setTracks(nextTracks);
+      triedTracksRef.current.clear();
+      setPlaybackError("");
 
       setSelected((prev) => {
         if (prev && nextTracks.some((track) => track.src === prev)) {
@@ -44,6 +73,10 @@ export function MusicVisualizerPlayer() {
     } finally {
       setIsLoading(false);
     }
+  }, []);
+
+  React.useEffect(() => {
+    setMounted(true);
   }, []);
 
   React.useEffect(() => {
@@ -67,18 +100,43 @@ export function MusicVisualizerPlayer() {
 
     const onPlay = () => setIsPlaying(true);
     const onPause = () => setIsPlaying(false);
+    const onCanPlay = () => {
+      triedTracksRef.current.clear();
+      setPlaybackError("");
+    };
+    const onError = () => {
+      const failed = selected || audio.currentSrc;
+      const code = audio.error?.code ?? 0;
+      if (failed) {
+        triedTracksRef.current.add(failed);
+      }
+
+      const messages: Record<number, string> = {
+        1: "Lecture interrompue.",
+        2: "Erreur reseau lors du chargement audio.",
+        3: "Le fichier audio semble corrompu ou decode impossible.",
+        4: "Format audio non supporte par le navigateur.",
+      };
+
+      setPlaybackError(messages[code] ?? "Impossible de lire ce morceau.");
+      jumpToNextTrack(failed);
+    };
 
     audio.addEventListener("play", onPlay);
     audio.addEventListener("pause", onPause);
+    audio.addEventListener("canplay", onCanPlay);
+    audio.addEventListener("error", onError);
 
     return () => {
       audio.removeEventListener("play", onPlay);
       audio.removeEventListener("pause", onPause);
+      audio.removeEventListener("canplay", onCanPlay);
+      audio.removeEventListener("error", onError);
       if (typeof unregister === "function") {
         unregister();
       }
     };
-  }, [registerAudioElement]);
+  }, [jumpToNextTrack, registerAudioElement, selected]);
 
   React.useEffect(() => {
     const audio = audioRef.current;
@@ -86,6 +144,7 @@ export function MusicVisualizerPlayer() {
       return;
     }
 
+    setPlaybackError("");
     const shouldResume = !audio.paused;
     audio.src = selected;
     audio.load();
@@ -115,6 +174,10 @@ export function MusicVisualizerPlayer() {
     }
 
     audio.pause();
+  }
+
+  if (!mounted) {
+    return null;
   }
 
   return (
@@ -192,6 +255,7 @@ export function MusicVisualizerPlayer() {
               value={selected}
               onChange={(event) => {
                 resumeAudio();
+                triedTracksRef.current.clear();
                 setSelected(event.target.value);
               }}
               className="h-9 w-full border border-border/70 bg-transparent px-2 text-foreground"
@@ -207,6 +271,8 @@ export function MusicVisualizerPlayer() {
                 ))
               )}
             </select>
+
+            {playbackError ? <p className="text-[10px] normal-case tracking-normal text-red-400">{playbackError}</p> : null}
           </div>
         </>
       )}
