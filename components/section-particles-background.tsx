@@ -297,11 +297,12 @@ export function SectionParticlesBackground() {
       const highReact = averageSpectrumRange(spectrum, 0.62, 1);
       const panelVisible = showAnalyzerRef.current;
       const coreVisible = showCoreRef.current;
+      const isMobile = width < 768;
 
-      const panelW = panelVisible ? Math.min(width * 0.9, 1180) : 0;
-      const panelH = panelVisible ? Math.max(150, Math.min(230, height * 0.28)) : 0;
+      const panelW = panelVisible ? (isMobile ? Math.min(width * 0.96, width - 8) : Math.min(width * 0.9, 1180)) : 0;
+      const panelH = panelVisible ? (isMobile ? Math.max(118, Math.min(150, height * 0.22)) : Math.max(150, Math.min(230, height * 0.28))) : 0;
       const panelX = panelVisible ? (width - panelW) * 0.5 : 0;
-      const panelY = panelVisible ? height - panelH - 20 : height + 9999;
+      const panelY = panelVisible ? (isMobile ? height - panelH - 8 : height - panelH - 20) : height + 9999;
 
       ctx.clearRect(0, 0, width, height);
 
@@ -410,7 +411,7 @@ export function SectionParticlesBackground() {
           ctx.stroke();
         }
 
-        const radialBars = reducedMotionRef.current ? 36 : 72;
+        const radialBars = reducedMotionRef.current ? 32 : isMobile ? 40 : 72;
         for (let i = 0; i < radialBars; i += 1) {
           const angle = (i / radialBars) * Math.PI * 2 + t * 0.075;
           const bandValue = sampleSpectrum(spectrum, i / Math.max(1, radialBars - 1));
@@ -431,7 +432,7 @@ export function SectionParticlesBackground() {
           ctx.stroke();
         }
 
-        const ringSamples = reducedMotionRef.current ? 48 : 96;
+        const ringSamples = reducedMotionRef.current ? 40 : isMobile ? 56 : 96;
         ctx.beginPath();
         for (let i = 0; i <= ringSamples; i += 1) {
           const k = i / ringSamples;
@@ -499,7 +500,7 @@ export function SectionParticlesBackground() {
           ctx.stroke();
         }
 
-        const lowCut = panelX + panelW * 0.28;
+        const lowCut = panelX + panelW * 0.3;
         const highCut = panelX + panelW * 0.72;
         ctx.strokeStyle = rgba(cyberAccent, isDark ? 0.2 : 0.13);
         ctx.lineWidth = 0.9;
@@ -510,16 +511,18 @@ export function SectionParticlesBackground() {
         ctx.lineTo(highCut, panelY + panelH - 14);
         ctx.stroke();
 
-        ctx.fillStyle = rgba(cyberAccent2, isDark ? 0.62 : 0.5);
-        ctx.font = "11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-        ctx.fillText("LOW", panelX + 14, panelY + 24);
-        ctx.fillText("MID", lowCut + 12, panelY + 24);
-        ctx.fillText("HIGH", highCut + 12, panelY + 24);
+        if (!isMobile) {
+          ctx.fillStyle = rgba(cyberAccent2, isDark ? 0.62 : 0.5);
+          ctx.font = "11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+          ctx.fillText("LOW", panelX + 14, panelY + 24);
+          ctx.fillText("MID", lowCut + 12, panelY + 24);
+          ctx.fillText("HIGH", highCut + 12, panelY + 24);
+        }
 
-        const spectrumBars = reducedMotionRef.current ? 48 : 84;
-        const barsAreaY = panelY + panelH * 0.42;
-        const barsAreaH = panelH * 0.5;
-        const barGap = 1.8;
+        const spectrumBars = reducedMotionRef.current ? 42 : isMobile ? 52 : 84;
+        const barsAreaY = panelY + panelH * (isMobile ? 0.36 : 0.42);
+        const barsAreaH = panelH * (isMobile ? 0.56 : 0.5);
+        const barGap = isMobile ? 1.2 : 1.8;
         const barW = Math.max(1.6, (panelW - 24 - (spectrumBars - 1) * barGap) / spectrumBars);
 
         let contourStarted = false;
@@ -566,8 +569,8 @@ export function SectionParticlesBackground() {
         ctx.lineWidth = 1.2;
         ctx.stroke();
 
-        const scopeY = panelY + 14;
-        const scopeH = panelH * 0.24;
+        const scopeY = panelY + (isMobile ? 10 : 14);
+        const scopeH = panelH * (isMobile ? 0.2 : 0.24);
         const scopeMid = scopeY + scopeH * 0.5;
         ctx.strokeStyle = rgba(cyberAccent, isDark ? 0.52 : 0.38);
         ctx.lineWidth = 0.9;
@@ -591,14 +594,16 @@ export function SectionParticlesBackground() {
         ctx.lineWidth = 1.3;
         ctx.stroke();
 
-        const freqTicks = [60, 120, 250, 500, 1000, 2000, 4000, 8000, 16000];
-        ctx.fillStyle = rgba(cyberAccent2, isDark ? 0.5 : 0.42);
-        ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
-        freqTicks.forEach((freq) => {
-          const fx = panelX + 12 + freqToNormalized(freq) * (panelW - 24);
-          const label = freq >= 1000 ? `${Math.round(freq / 1000)}k` : `${freq}`;
-          ctx.fillText(label, fx - 8, panelY + panelH - 6);
-        });
+        if (!isMobile) {
+          const freqTicks = [60, 120, 250, 500, 1000, 2000, 4000, 8000, 16000];
+          ctx.fillStyle = rgba(cyberAccent2, isDark ? 0.5 : 0.42);
+          ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+          freqTicks.forEach((freq) => {
+            const fx = panelX + 12 + freqToNormalized(freq) * (panelW - 24);
+            const label = freq >= 1000 ? `${Math.round(freq / 1000)}k` : `${freq}`;
+            ctx.fillText(label, fx - 8, panelY + panelH - 6);
+          });
+        }
       }
 
       frame = window.requestAnimationFrame(render);

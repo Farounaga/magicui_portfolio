@@ -76,7 +76,7 @@ export function Hero () {
                             "Développeur chez SYADEM",
                             "Passionné d'informatique",
                             ]}
-                            mainClassName="inline-flex w-fit overflow-hidden rounded-lg px-2 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 text-xl font-medium tracking-tight bg-emerald-300 text-emerald-950 dark:bg-emerald-400/15 dark:text-emerald-200 dark:ring-1 dark:ring-emerald-300/20"
+                            mainClassName="inline-flex w-fit max-w-[90vw] overflow-hidden rounded-lg px-2 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 text-center text-base sm:text-lg md:text-xl font-medium tracking-tight bg-emerald-300 text-emerald-950 dark:bg-emerald-400/15 dark:text-emerald-200 dark:ring-1 dark:ring-emerald-300/20"
                             staggerFrom="last"
                             initial={{ y: '100%' }}
                             animate={{ y: 0 }}

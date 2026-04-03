@@ -181,18 +181,21 @@ export function MusicVisualizerPlayer() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-[65] w-[min(94vw,360px)] border border-border/70 bg-background/86 p-3 backdrop-blur-md">
-      <div className="mb-2 flex items-center justify-between">
-        <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+    <div
+      className="fixed bottom-2 left-2 right-2 z-[65] border border-border/70 bg-background/86 p-2.5 backdrop-blur-md md:bottom-4 md:left-auto md:right-4 md:w-[min(94vw,360px)] md:p-3"
+      style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}
+    >
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <div className="inline-flex min-w-0 items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground md:text-xs md:tracking-[0.18em]">
           <ListMusic className="h-3.5 w-3.5 text-emerald-500" />
-          Visualizer Audio
+          <span className="truncate">Visualizer Audio</span>
         </div>
 
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setCollapsed((prev) => !prev)}
-            className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500"
+            className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500 md:h-8 md:w-8"
             aria-label={collapsed ? "Expand" : "Collapse"}
           >
             {collapsed ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -203,7 +206,7 @@ export function MusicVisualizerPlayer() {
               resumeAudio();
               void togglePlayback();
             }}
-            className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500"
+            className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500 md:h-8 md:w-8"
             aria-label={isPlaying ? "Pause" : "Play"}
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
@@ -213,12 +216,12 @@ export function MusicVisualizerPlayer() {
 
       {!collapsed && (
         <>
-          <div className="space-y-2 text-xs uppercase tracking-[0.14em] text-muted-foreground">
-            <div className="flex items-center gap-2">
+          <div className="space-y-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground md:text-xs md:tracking-[0.14em]">
+            <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={toggleCore}
-                className={`inline-flex h-8 items-center border px-2 ${
+                className={`inline-flex h-8 items-center border px-2 md:h-8 ${
                   showCore
                     ? "border-emerald-500/70 text-emerald-500"
                     : "border-border/70 text-muted-foreground hover:text-foreground"
@@ -229,7 +232,7 @@ export function MusicVisualizerPlayer() {
               <button
                 type="button"
                 onClick={toggleAnalyzer}
-                className={`inline-flex h-8 items-center border px-2 ${
+                className={`inline-flex h-8 items-center border px-2 md:h-8 ${
                   showAnalyzer
                     ? "border-emerald-500/70 text-emerald-500"
                     : "border-border/70 text-muted-foreground hover:text-foreground"
@@ -239,12 +242,12 @@ export function MusicVisualizerPlayer() {
               </button>
             </div>
 
-            <div className="flex items-center justify-between">
-              <span>Tracks from `/public/music`</span>
+            <div className="flex items-center justify-between gap-2">
+              <span className="truncate">Tracks from `/public/music`</span>
               <button
                 type="button"
                 onClick={() => void loadTracks()}
-                className="inline-flex items-center gap-1 text-foreground hover:text-emerald-500"
+                className="inline-flex shrink-0 items-center gap-1 text-foreground hover:text-emerald-500"
               >
                 <RefreshCw className={isLoading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
                 Refresh
@@ -258,7 +261,7 @@ export function MusicVisualizerPlayer() {
                 triedTracksRef.current.clear();
                 setSelected(event.target.value);
               }}
-              className="h-9 w-full border border-border/70 bg-transparent px-2 text-foreground"
+              className="h-9 w-full border border-border/70 bg-transparent px-2 text-xs text-foreground md:text-sm"
               disabled={tracks.length === 0}
             >
               {tracks.length === 0 ? (
@@ -279,7 +282,7 @@ export function MusicVisualizerPlayer() {
 
       <audio
         ref={audioRef}
-        className={collapsed ? "sr-only" : "mt-3 w-full"}
+        className={collapsed ? "sr-only" : "mt-2 w-full md:mt-3"}
         controls={!collapsed}
         preload="metadata"
         onPlay={resumeAudio}

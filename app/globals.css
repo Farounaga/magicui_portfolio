@@ -204,6 +204,11 @@
   --shadow-2xl: var(--shadow-2xl);
 }
 @layer base {
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: clip;
+  }
   * {
     @apply border-border outline-ring/50;
   }

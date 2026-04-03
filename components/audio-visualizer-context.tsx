@@ -184,6 +184,7 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
   const [energy, setEnergy] = React.useState<AudioEnergy>(DEFAULT_ENERGY);
   const [showCore, setShowCore] = React.useState(true);
   const [showAnalyzer, setShowAnalyzer] = React.useState(false);
+  const autoConfiguredRef = React.useRef(false);
 
   const mediaElementRef = React.useRef<HTMLMediaElement | null>(null);
   const audioContextRef = React.useRef<AudioContext | null>(null);
@@ -362,6 +363,18 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
       mountedRef.current = false;
       window.cancelAnimationFrame(rafRef.current);
     };
+  }, []);
+
+  React.useEffect(() => {
+    if (autoConfiguredRef.current || typeof window === "undefined") {
+      return;
+    }
+
+    autoConfiguredRef.current = true;
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      setShowCore(false);
+      setShowAnalyzer(false);
+    }
   }, []);
 
   React.useEffect(() => {

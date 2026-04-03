@@ -8,6 +8,19 @@ import { Realisations } from "@/sections/realisations";
 import { Veille } from "@/sections/veille";
 import { Contact } from "@/sections/contact";
 import ReactLenis from "lenis/react";
+import type { ReactNode } from "react";
+
+function ReadableSection({ id, children }: { id: string; children: ReactNode }) {
+  return (
+    <section id={id} className="relative">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/78 via-background/64 to-background/76 backdrop-blur-[1.4px]"
+      />
+      <div className="relative z-10">{children}</div>
+    </section>
+  );
+}
 
 export default function Home() {
   return (
@@ -20,33 +33,33 @@ export default function Home() {
         <Services />
       </section>
 
-      <section id="presentation-section">
+      <ReadableSection id="presentation-section">
         <Presentation />
-      </section>
+      </ReadableSection>
 
-      <section id="etudes-section">
+      <ReadableSection id="etudes-section">
         <Education />
-      </section>
+      </ReadableSection>
 
-      <section id="experience-section">
+      <ReadableSection id="experience-section">
         <Experience />
-      </section>
+      </ReadableSection>
 
-      <section id="competences-section">
+      <ReadableSection id="competences-section">
         <SkillsCertifications />
-      </section>
+      </ReadableSection>
 
-      <section id="realisations-section">
+      <ReadableSection id="realisations-section">
         <Realisations />
-      </section>
+      </ReadableSection>
 
-      <section id="veille-section">
+      <ReadableSection id="veille-section">
         <Veille />
-      </section>
+      </ReadableSection>
 
-      <section id="contact-section">
+      <ReadableSection id="contact-section">
         <Contact />
-      </section>
+      </ReadableSection>
     </ReactLenis>
   );
 }

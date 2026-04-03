@@ -4,8 +4,8 @@ import Link from "next/link";
 
 export function Header() {
   return (
-    <header className="fixed left-0 top-0 w-full flex justify-center z-50 px-12 text-foreground">
-      <div className="container flex h-16 items-center gap-4">
+    <header className="fixed left-0 top-0 z-50 flex w-full justify-center px-3 text-foreground md:px-12">
+      <div className="container flex h-16 items-center justify-between gap-2 md:gap-4">
         <Link className="inline-flex items-center gap-1" href="/">
           <Logo />
         </Link>
@@ -15,7 +15,7 @@ export function Header() {
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500"></span>
             <span className="relative inline-flex rounded-full size-full bg-emerald-300"></span>
           </div>
-          <div className="text-xs font-medium text-muted-foreground">
+          <div className="hidden text-xs font-medium text-muted-foreground sm:block">
             Available for projects
           </div>
         </div>

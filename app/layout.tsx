@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/sections/header";
 import { Footer } from "@/sections/footer";
@@ -9,7 +9,7 @@ import { AudioVisualizerProvider } from "@/components/audio-visualizer-context";
 import { MusicVisualizerPlayer } from "@/components/music-visualizer-player";
 import { DeferredVisualEffects } from "@/components/deferred-visual-effects";
 
-const fontSans = Inter({
+const fontSans = Geist({
   variable: "--font-sans",
   subsets: ["latin"],
 });

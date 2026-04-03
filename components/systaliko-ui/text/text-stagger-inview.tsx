@@ -22,7 +22,7 @@ export function WordStagger({
   const characters = String(children).split("");
   const animationVariants = ANIMATION_VARIANTS[animation];
   return (
-    <span className="inline-block text-nowrap" {...props}>
+    <span className="inline-block" {...props}>
       {characters.map((char, index) => (
         <motion.span
           className="inline-block"

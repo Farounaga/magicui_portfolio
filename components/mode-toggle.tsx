@@ -9,6 +9,15 @@ import { Button } from './ui/button';
 export function ModeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
   const [, startTransition] = React.useTransition();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="h-9 w-9" aria-hidden />;
+  }
 
   return (
     <Button
