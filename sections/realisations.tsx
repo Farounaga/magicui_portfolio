@@ -96,7 +96,16 @@ export function Realisations() {
               ))}
             </div>
             <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-              Si un fichier n'est pas encore publie dans ce repo, il reste disponible depuis la version docus.
+              Si un fichier n'est pas encore publie dans ce repo, il reste disponible depuis la{" "}
+              <a
+              href="https://radix-portfolio-2026.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-emerald-400 hover:text-emerald-300"
+              >
+              version précedente
+              </a>
+              .
             </p>
           </div>
         </article>
