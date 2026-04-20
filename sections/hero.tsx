@@ -7,6 +7,7 @@ import { ANIMATION_VARIANTS } from "@/components/systaliko-ui/utils/animation-va
 import GithubIcon from "@/components/icons/github-icon";
 import LinkedinIcon from "@/components/icons/linkedin-icon";
 import RotatingText from '@/components/RotatingText'
+import { ArrowDown } from "lucide-react";
 
 export function Hero () {
     const scaleAnimation = ANIMATION_VARIANTS['z']
@@ -31,6 +32,10 @@ export function Hero () {
             window.removeEventListener("load", onLoad)
         }
     }, [])
+
+    const scrollToNextSection = () => {
+        document.getElementById("presentation")?.scrollIntoView({ behavior: "smooth" })
+    }
 
     return (
         <section className="space-y-6 py-12 px-6">
@@ -74,7 +79,7 @@ export function Hero () {
                             "Alternant SIO SLAM",
                             "Support chez SYADEM",
                             "Développeur chez SYADEM",
-                            "Passionné d'informatique",
+                            "Passionné par l'informatique",
                             ]}
                             mainClassName="inline-flex w-fit max-w-[90vw] overflow-hidden rounded-lg px-2 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 text-center text-base sm:text-lg md:text-xl font-medium tracking-tight bg-emerald-300 text-emerald-950 dark:bg-emerald-400/15 dark:text-emerald-200 dark:ring-1 dark:ring-emerald-300/20"
                             staggerFrom="last"
@@ -84,7 +89,7 @@ export function Hero () {
                             staggerDuration={0.025}
                             splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
                             transition={{ type: 'spring', damping: 30, stiffness: 400 }}
-                            rotationInterval={3000}
+                            rotationInterval={4300}
                         />
                     </motion.div>
                     
@@ -96,6 +101,16 @@ export function Hero () {
                             <LinkedinIcon className="size-6" />
                         </a>
                     </motion.div>
+
+                    <motion.button
+                        type="button"
+                        onClick={scrollToNextSection}
+                        variants={opacityAnimation}
+                        className="mt-3 inline-flex items-center gap-2 border-b border-emerald-400/50 px-1 py-1 text-sm uppercase tracking-[0.18em] text-emerald-500 hover:text-emerald-400"
+                    >
+                        Voir la suite
+                        <ArrowDown className="h-4 w-4" />
+                    </motion.button>
                 </MotionConfig>
             </ContainerStagger>
         </section>

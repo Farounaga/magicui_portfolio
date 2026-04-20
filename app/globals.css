@@ -206,8 +206,21 @@
 @layer base {
   html,
   body {
+    width: 100%;
     max-width: 100%;
+    overflow-x: hidden;
     overflow-x: clip;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
   }
   * {
     @apply border-border outline-ring/50;

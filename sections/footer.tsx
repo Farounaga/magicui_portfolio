@@ -3,7 +3,7 @@ import { MarqueeContainer } from "@/components/marquee-container";
 const SOCIAL_LINKS = [
   {
     id: "social-link-github",
-    label: "Github",
+    label: "GitHub",
     link: "https://github.com/Farounaga",
   },
   {
@@ -18,7 +18,7 @@ export function Footer() {
     <footer className="px-6 pb-10 pt-16 md:px-10 lg:px-14">
       <MarqueeContainer baseVelocity={1.6}>
         <h2 className="mx-2 text-3xl font-bold uppercase tracking-tight text-muted-foreground md:text-5xl">
-          Disponible pour alternance · Support & Developpement
+          Disponible pour une alternance · Support & Développement
         </h2>
       </MarqueeContainer>
 

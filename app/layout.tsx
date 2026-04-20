@@ -20,8 +20,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Portfolio Template",
-  description: "A portfolio template to showcase your work and experience",
+  title: "Portfolio - Vladimir Spirine",
+  description: "Portfolio de Vladimir Spirine - BTS SIO SLAM, projets, compétences et réalisations professionnelles.",
 };
 
 export default function RootLayout({
@@ -30,7 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <body
         className={`${fontSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import SplashCursor from "@/components/SplashCursor";
 import { SectionParticlesBackground } from "@/components/section-particles-background";
 
 export function DeferredVisualEffects() {
@@ -38,17 +37,6 @@ export function DeferredVisualEffects() {
 
   return (
     <>
-      <SplashCursor
-        SIM_RESOLUTION={32}
-        DYE_RESOLUTION={512}
-        DENSITY_DISSIPATION={4.5}
-        VELOCITY_DISSIPATION={2.5}
-        PRESSURE={0}
-        CURL={1}
-        SPLAT_RADIUS={0.05}
-        SPLAT_FORCE={1000}
-        COLOR_UPDATE_SPEED={1}
-      />
       <SectionParticlesBackground />
     </>
   );

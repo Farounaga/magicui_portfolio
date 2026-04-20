@@ -113,9 +113,9 @@ export function MusicVisualizerPlayer() {
 
       const messages: Record<number, string> = {
         1: "Lecture interrompue.",
-        2: "Erreur reseau lors du chargement audio.",
-        3: "Le fichier audio semble corrompu ou decode impossible.",
-        4: "Format audio non supporte par le navigateur.",
+        2: "Erreur réseau lors du chargement audio.",
+        3: "Le fichier audio semble corrompu ou le décodage est impossible.",
+        4: "Format audio non pris en charge par le navigateur.",
       };
 
       setPlaybackError(messages[code] ?? "Impossible de lire ce morceau.");
@@ -188,7 +188,7 @@ export function MusicVisualizerPlayer() {
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="inline-flex min-w-0 items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground md:text-xs md:tracking-[0.18em]">
           <ListMusic className="h-3.5 w-3.5 text-emerald-500" />
-          <span className="truncate">Visualizer Audio</span>
+          <span className="truncate">Visualiseur audio</span>
         </div>
 
         <div className="flex items-center gap-1">
@@ -196,7 +196,7 @@ export function MusicVisualizerPlayer() {
             type="button"
             onClick={() => setCollapsed((prev) => !prev)}
             className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500 md:h-8 md:w-8"
-            aria-label={collapsed ? "Expand" : "Collapse"}
+            aria-label={collapsed ? "Déplier" : "Replier"}
           >
             {collapsed ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           </button>
@@ -207,7 +207,7 @@ export function MusicVisualizerPlayer() {
               void togglePlayback();
             }}
             className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500 md:h-8 md:w-8"
-            aria-label={isPlaying ? "Pause" : "Play"}
+            aria-label={isPlaying ? "Pause" : "Lecture"}
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           </button>
@@ -242,15 +242,15 @@ export function MusicVisualizerPlayer() {
               </button>
             </div>
 
-            <div className="flex items-center justify-between gap-2">
-              <span className="truncate">Tracks from `/public/music`</span>
+            <div className="flex min-w-0 items-center justify-between gap-2">
+              <span className="min-w-0 flex-1 truncate">Titres détectés dans `/public/music`</span>
               <button
                 type="button"
                 onClick={() => void loadTracks()}
                 className="inline-flex shrink-0 items-center gap-1 text-foreground hover:text-emerald-500"
               >
                 <RefreshCw className={isLoading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
-                Refresh
+                Actualiser
               </button>
             </div>
 
@@ -265,7 +265,7 @@ export function MusicVisualizerPlayer() {
               disabled={tracks.length === 0}
             >
               {tracks.length === 0 ? (
-                <option value="">No tracks found</option>
+                <option value="">Aucune piste détectée</option>
               ) : (
                 tracks.map((track) => (
                   <option key={track.id} value={track.src}>

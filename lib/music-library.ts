@@ -10,6 +10,7 @@ export type MusicFile = {
 };
 
 const ALLOWED_EXT = new Set([".mp3", ".wav", ".ogg", ".m4a", ".aac", ".flac"]);
+const ONLY_TRACK_PATTERN = /dead[\s_-]*blonde/i;
 
 function toLabel(filename: string): string {
   const base = filename.replace(/\.[^.]+$/, "");
@@ -19,13 +20,16 @@ function toLabel(filename: string): string {
 export async function listMusicFiles(): Promise<MusicFile[]> {
   const musicDir = path.join(process.cwd(), "public", "music");
   const entries = await fs.readdir(musicDir, { withFileTypes: true });
-
-  return entries
+  const names = entries
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
     .filter((name) => ALLOWED_EXT.has(path.extname(name).toLowerCase()))
-    .sort((a, b) => a.localeCompare(b, "fr", { sensitivity: "base" }))
-    .map((name, index) => ({
+    .sort((a, b) => a.localeCompare(b, "fr", { sensitivity: "base" }));
+
+  const onlyDeadBlonde = names.filter((name) => ONLY_TRACK_PATTERN.test(name));
+  const finalNames = onlyDeadBlonde.length > 0 ? onlyDeadBlonde : names;
+
+  return finalNames.map((name, index) => ({
       index,
       name,
       label: toLabel(name),

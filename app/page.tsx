@@ -5,6 +5,7 @@ import { Education } from "@/sections/education";
 import { Experience } from "@/sections/experience";
 import { SkillsCertifications } from "@/sections/skills-certifications";
 import { Realisations } from "@/sections/realisations";
+import { Evidence } from "@/sections/evidence";
 import { Veille } from "@/sections/veille";
 import { Contact } from "@/sections/contact";
 import ReactLenis from "lenis/react";
@@ -51,6 +52,10 @@ export default function Home() {
 
       <ReadableSection id="realisations-section">
         <Realisations />
+      </ReadableSection>
+
+      <ReadableSection id="preuves-section">
+        <Evidence />
       </ReadableSection>
 
       <ReadableSection id="veille-section">

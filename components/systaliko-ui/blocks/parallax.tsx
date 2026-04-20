@@ -27,7 +27,7 @@ export function PrallaxContainer({
   ...props
 }: React.ComponentProps<'div'>) {
   return (
-    <div className={cn('px-default min-h-screen', className)} {...props} />
+    <div className={cn('min-h-screen w-full px-1 sm:px-2', className)} {...props} />
   );
 }
 export function ParallaxItem({

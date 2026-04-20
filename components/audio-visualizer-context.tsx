@@ -58,7 +58,7 @@ const AudioVisualizerContext = React.createContext<AudioVisualizerContextValue>(
   energy: DEFAULT_ENERGY,
   registerAudioElement: () => {},
   resumeAudio: () => {},
-  showCore: true,
+  showCore: false,
   showAnalyzer: false,
   toggleCore: () => {},
   toggleAnalyzer: () => {},
@@ -182,7 +182,7 @@ function getAudioEngine(): AudioEngine | null {
 
 export function AudioVisualizerProvider({ children }: { children: React.ReactNode }) {
   const [energy, setEnergy] = React.useState<AudioEnergy>(DEFAULT_ENERGY);
-  const [showCore, setShowCore] = React.useState(true);
+  const [showCore, setShowCore] = React.useState(false);
   const [showAnalyzer, setShowAnalyzer] = React.useState(false);
   const autoConfiguredRef = React.useRef(false);
 

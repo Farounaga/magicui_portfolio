@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { motion } from "motion/react";
-import { ScrambleText } from "@/components/effects/scramble-text";
+import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
 
 const EMAIL = "7h16ciolq@mozmail.com";
@@ -18,20 +18,20 @@ export function Contact() {
     event.preventDefault();
 
     if (!name || !email || !message) {
-      setStatus("Remplis au minimum nom, email et message.");
+      setStatus("Veuillez renseigner au minimum le nom, l'e-mail et le message.");
       return;
     }
 
-    const finalSubject = subject || `Contact portfolio - ${name}`;
+    const finalSubject = subject || `Contact depuis le portfolio - ${name}`;
     const body = [
-      `Nom: ${name}`,
-      `Email: ${email}`,
+      `Nom : ${name}`,
+      `E-mail : ${email}`,
       "",
       message,
     ].join("\n");
 
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(finalSubject)}&body=${encodeURIComponent(body)}`;
-    setStatus("Ton client mail est ouvert. J'attends ton message.");
+    setStatus("Votre client de messagerie a été ouvert. Vous pouvez envoyer votre message.");
   }
 
   return (
@@ -39,10 +39,10 @@ export function Contact() {
       <div className="mx-auto max-w-6xl space-y-12">
         <header className="space-y-4 border-t border-border/60 pt-8">
           <h2 className="text-4xl font-bold uppercase tracking-tight md:text-6xl">
-            <ScrambleText text="Contact me" />
+            <HeadingWaveText>Contact</HeadingWaveText>
           </h2>
           <p className="max-w-3xl text-foreground/85 leading-relaxed">
-            <RevealText text="Un projet, une alternance, une collaboration: envoie-moi un message directement." />
+            <RevealText text="Un projet, une alternance ou une collaboration : contactez-moi directement." />
           </p>
         </header>
 
@@ -61,7 +61,7 @@ export function Contact() {
                 value={name}
                 onChange={(event) => setName(event.target.value)}
                 className="h-11 w-full border-b border-border bg-transparent px-0 text-base text-foreground outline-none focus:border-emerald-400"
-                placeholder="Ton nom"
+                placeholder="Votre nom"
               />
             </label>
 
@@ -72,7 +72,7 @@ export function Contact() {
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 className="h-11 w-full border-b border-border bg-transparent px-0 text-base text-foreground outline-none focus:border-emerald-400"
-                placeholder="ton@email.com"
+                placeholder="votre.adresse@email.com"
               />
             </label>
           </div>
@@ -93,12 +93,12 @@ export function Contact() {
               value={message}
               onChange={(event) => setMessage(event.target.value)}
               className="min-h-[140px] w-full border-b border-border bg-transparent px-0 py-2 text-base text-foreground outline-none focus:border-emerald-400"
-              placeholder="Ecris ton message"
+              placeholder="Écris ton message"
             />
           </label>
 
           <div className="flex flex-wrap items-center justify-between gap-4 border-t border-border/50 pt-4">
-            <p className="text-sm text-muted-foreground">Ou direct: {EMAIL}</p>
+            <p className="text-sm text-muted-foreground">Ou directement : {EMAIL}</p>
             <button
               type="submit"
               className="text-sm font-semibold uppercase tracking-[0.2em] text-emerald-400 hover:text-emerald-300"

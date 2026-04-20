@@ -8,75 +8,75 @@ import { WrenchIcon } from "@/components/ui/wrench";
 import { UserIcon } from "@/components/ui/user";
 import { EarthIcon } from "@/components/ui/earth";
 import { AirplaneIcon } from "@/components/ui/airplane";
-import { ScrambleText } from "@/components/effects/scramble-text";
+import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
 
 const EXPERIENCE_HISTORY = [
   {
     id: "experience-syadem",
-    company: "Syadem",
+    company: "SYADEM",
     title: "Technicien Support - Apprenti BTS SIO SLAM",
     period: "Novembre 2024 - Aujourd'hui",
     location: "Bordeaux, France",
     icon: StethoscopeIcon,
     description:
-      "Role hybride entre support technique et developpement d'outils internes pour les equipes metier et techniques.",
+      "Rôle hybride entre support technique et développement d'outils internes pour les équipes métier et techniques.",
     support:
-      "Diagnostic de tickets, reproduction d'incidents, analyse fonctionnelle et communication avec les utilisateurs (professionnels de sante, ARS, etablissements).",
+      "Diagnostic de tickets, reproduction d'incidents, analyse fonctionnelle et communication avec les utilisateurs (professionnels de santé, ARS, établissements).",
     development:
-      "Creation d'un outil d'analyse automatique des tickets avec traitement de texte, clustering vectoriel, extraction de themes et automatisation.",
+      "Création d'un outil d'analyse automatique des tickets avec traitement de texte, clustering vectoriel, extraction de thèmes et automatisation.",
     companyText:
-      "Syadem developpe des solutions logicielles pour la vaccination: MesVaccins, Colibri, NUVA et Carnet de Vaccination Numerique.",
+      "Syadem développe des solutions logicielles pour la vaccination : MesVaccins, Colibri, NUVA et Carnet de Vaccination Numérique.",
   },
   {
     id: "experience-boulanger",
     company: "Boulanger",
     title: "Vendeur",
-    period: "Novembre 2023 - Decembre 2023",
-    location: "Boe, France",
+    period: "Novembre 2023 - Décembre 2023",
+    location: "Boé, France",
     icon: CartIcon,
     description:
-      "Accueil clients, conseil, vente de produits electromenagers et multimedia, suivi de stock et mise en rayon.",
+      "Accueil clients, conseil, vente de produits électroménagers et multimédias, suivi de stock et mise en rayon.",
   },
   {
     id: "experience-docteur-it",
     company: "Docteur IT",
     title: "Vendeur-Technicien",
     period: "Septembre 2021 - Septembre 2023",
-    location: "Boe, France",
+    location: "Boé, France",
     icon: WrenchIcon,
     description:
-      "Reparation de smartphones, tablettes et ordinateurs, diagnostic, remplacement de composants, vente d'accessoires.",
+      "Réparation de smartphones, tablettes et ordinateurs, diagnostic, remplacement de composants et vente d'accessoires.",
   },
   {
     id: "experience-hotel",
-    company: "Hotel du Mont Dore",
-    title: "Receptionniste",
+    company: "Hôtel du Mont-Dore",
+    title: "Réceptionniste",
     period: "Juin 2019 - Septembre 2019",
     location: "Paris 17e",
     icon: UserIcon,
     description:
-      "Gestion de reservations, accueil clients, encaissements et coordination operationnelle avec l'equipe d'entretien.",
+      "Gestion de réservations, accueil clients, encaissements et coordination opérationnelle avec l'équipe d'entretien.",
   },
   {
     id: "experience-venjakob",
     company: "Venjakob Maschinenbau GmbH & Co. KG",
     title: "Stage - Commerce International",
-    period: "Juin 2016 - Aout 2016",
+    period: "Juin 2016 - Août 2016",
     location: "Allemagne",
     icon: EarthIcon,
     description:
-      "Observation des flux export et participation a la traduction de documents techniques.",
+      "Observation des flux export et participation à la traduction de documents techniques.",
   },
   {
     id: "experience-air-france",
     company: "Air France",
-    title: "Stage - Decouverte professionnelle",
-    period: "Fevrier 2012 - Mars 2012",
+    title: "Stage - Découverte professionnelle",
+    period: "Février 2012 - Mars 2012",
     location: "Moscou",
     icon: AirplaneIcon,
     description:
-      "Immersion dans l'environnement aeroportuaire et decouverte des procedures d'enregistrement et d'embarquement.",
+      "Immersion dans l'environnement aéroportuaire et découverte des procédures d'enregistrement et d'embarquement.",
   },
 ] as const;
 
@@ -98,10 +98,10 @@ export function Experience() {
       <div className="mx-auto max-w-6xl space-y-12">
         <header className="space-y-4 border-t border-border/60 pt-8">
           <h2 className="text-4xl font-bold uppercase tracking-tight md:text-6xl">
-            <ScrambleText text="Parcours professionnel" />
+            <HeadingWaveText>Parcours professionnel</HeadingWaveText>
           </h2>
           <p className="max-w-3xl text-foreground/85 leading-relaxed">
-            <RevealText text="Support, relation utilisateur, developpement interne: un parcours operationnel avec progression technique continue." />
+            <RevealText text="Support, relation utilisateur, développement interne : un parcours opérationnel avec progression technique continue." />
           </p>
         </header>
 
@@ -152,7 +152,7 @@ export function Experience() {
 
                   {"development" in experience && experience.development && (
                     <p className="leading-relaxed">
-                      <span className="mr-2 text-xs uppercase tracking-[0.16em] text-emerald-400">Developpement</span>
+                      <span className="mr-2 text-xs uppercase tracking-[0.16em] text-emerald-400">Développement</span>
                       {experience.development}
                     </p>
                   )}

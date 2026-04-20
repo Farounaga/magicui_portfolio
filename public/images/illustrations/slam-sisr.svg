@@ -1,0 +1,26 @@
+<svg width="1200" height="450" viewBox="0 0 1200 450" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="450" fill="#0B1117"/>
+  <rect x="24" y="24" width="1152" height="402" stroke="#253341" stroke-width="2"/>
+
+  <rect x="70" y="90" width="470" height="260" fill="#101A24" stroke="#2EC4B6" stroke-width="2"/>
+  <rect x="660" y="90" width="470" height="260" fill="#101A24" stroke="#67A7FF" stroke-width="2"/>
+
+  <text x="110" y="140" fill="#2EC4B6" font-family="Arial, sans-serif" font-size="40" font-weight="700">SLAM</text>
+  <text x="700" y="140" fill="#67A7FF" font-family="Arial, sans-serif" font-size="40" font-weight="700">SISR</text>
+
+  <text x="110" y="190" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Développement d'applications</text>
+  <text x="110" y="225" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• API, bases de données, tests</text>
+  <text x="110" y="260" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Logiciels métiers</text>
+  <text x="110" y="295" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Qualité et maintenance</text>
+
+  <text x="700" y="190" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Réseaux et serveurs</text>
+  <text x="700" y="225" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Administration système</text>
+  <text x="700" y="260" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Cybersécurité et supervision</text>
+  <text x="700" y="295" fill="#D5E2EE" font-family="Arial, sans-serif" font-size="24">• Infrastructure d'entreprise</text>
+
+  <line x1="540" y1="220" x2="660" y2="220" stroke="#3A4D63" stroke-width="2" stroke-dasharray="8 8"/>
+  <text x="517" y="212" fill="#AFC2D5" font-family="Arial, sans-serif" font-size="18">BTS SIO</text>
+
+  <text x="70" y="56" fill="#8CA4BA" font-family="Arial, sans-serif" font-size="18" letter-spacing="2">PARCOURS &amp; SPÉCIALITÉS</text>
+</svg>
+

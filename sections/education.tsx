@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
-import { ScrambleText } from "@/components/effects/scramble-text";
+import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
 
 const EDUCATION_ITEMS = [
@@ -11,26 +11,26 @@ const EDUCATION_ITEMS = [
     title: "BTS SIO - Option SLAM",
     place: "Campus Ermitage, Agen",
     description:
-      "Specialisation en developpement logiciel, bases de donnees et solutions metier avec une approche orientee entreprise.",
-    focus: ["Programmation", "Conception logicielle", "SQL et modelisation", "Documentation et tests"],
+      "Spécialisation en développement logiciel, bases de données et solutions métier, avec une approche orientée entreprise et alternance.",
+    focus: ["Programmation", "Conception logicielle", "SQL et modélisation", "Documentation et tests"],
   },
   {
     id: "edu-bts-ci",
     period: "2016 - 2018",
     title: "BTS Commerce International",
-    place: "Lycee Commercial Saint Pierre, Brunoy",
+    place: "Lycée Commercial Saint-Pierre, Brunoy",
     description:
-      "Formation en communication professionnelle, negociation et contextes internationaux.",
-    focus: ["Anglais avance", "Espagnol intermediaire", "Communication"],
+      "Formation en communication professionnelle, négociation et contextes internationaux.",
+    focus: ["Anglais avancé", "Espagnol intermédiaire", "Communication"],
   },
   {
     id: "edu-bac",
     period: "2015 - 2016",
-    title: "Baccalaureat Scientifique (SVT)",
-    place: "Lycee Saint Francois de Sales, Evreux",
+    title: "Baccalauréat Scientifique (SVT)",
+    place: "Lycée Saint-François-de-Sales, Évreux",
     description:
-      "Base scientifique et methodologique solide: rigueur, logique et demarche experimentale.",
-    focus: ["Rigueur", "Analyse", "Methodologie"],
+      "Base scientifique et méthodologique solide : rigueur, logique et démarche expérimentale.",
+    focus: ["Rigueur", "Analyse", "Méthodologie"],
   },
 ];
 
@@ -39,12 +39,12 @@ export function Education() {
     <section id="parcours-etudes" className="px-6 py-20 md:px-10 lg:px-14">
       <div className="mx-auto max-w-6xl space-y-12">
         <header className="space-y-4 border-t border-border/60 pt-8">
-          <p className="text-xs uppercase tracking-[0.28em] text-emerald-400">02 · Parcours & Competences</p>
+          <p className="text-xs uppercase tracking-[0.28em] text-emerald-400">02 · Parcours & Compétences</p>
           <h2 className="text-4xl font-bold uppercase tracking-tight md:text-6xl">
-            <ScrambleText text="Parcours d'etudes" />
+            <HeadingWaveText>Parcours d'études</HeadingWaveText>
           </h2>
           <p className="max-w-3xl text-foreground/85 leading-relaxed">
-            <RevealText text="Un parcours qui relie sciences, langues, commerce et informatique appliquee en contexte reel." />
+            <RevealText text="Un parcours qui relie sciences, langues, commerce et informatique appliquée en contexte réel." />
           </p>
         </header>
 
