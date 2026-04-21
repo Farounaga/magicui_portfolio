@@ -2,14 +2,15 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, MouseOff, MousePointer2, X } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { ModeToggle } from "@/components/mode-toggle";
 
 const NAV_LINKS = [
   { id: "presentation", label: "Présentation", href: "#presentation" },
+  { id: "parcours-competences", label: "Parcours & compétences", href: "#etudes-section" },
   { id: "realisations", label: "Réalisations", href: "#realisations" },
-  { id: "preuves", label: "Preuves", href: "#preuves-illustrations" },
+  { id: "preuves", label: "Preuves & illustrations", href: "#preuves-illustrations" },
   { id: "veille", label: "Veille", href: "#veille-technologique" },
   { id: "contact", label: "Contact", href: "#contact" },
 ] as const;
@@ -19,8 +20,29 @@ const EXTERNAL_LINKS = [
   { id: "campus", label: "Campus Ermitage", href: "https://campusermitage.fr/" },
 ] as const;
 
+const CURSOR_TRAIL_STORAGE_KEY = "vs_cursor_trail_enabled";
+const CURSOR_TRAIL_EVENT = "vs-cursor-trail-toggle";
+
 export function Header() {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  const [cursorTrailEnabled, setCursorTrailEnabled] = React.useState(true);
+
+  const toggleCursorTrail = React.useCallback(() => {
+    const next = !cursorTrailEnabled;
+    setCursorTrailEnabled(next);
+
+    try {
+      window.localStorage.setItem(CURSOR_TRAIL_STORAGE_KEY, next ? "true" : "false");
+    } catch {
+      // ignore storage write issues
+    }
+
+    window.dispatchEvent(
+      new CustomEvent(CURSOR_TRAIL_EVENT, {
+        detail: { enabled: next },
+      }),
+    );
+  }, [cursorTrailEnabled]);
 
   React.useEffect(() => {
     const onResize = () => {
@@ -29,21 +51,43 @@ export function Header() {
       }
     };
 
+    try {
+      const stored = window.localStorage.getItem(CURSOR_TRAIL_STORAGE_KEY);
+      if (stored === "false") {
+        setCursorTrailEnabled(false);
+      }
+      if (stored === "true") {
+        setCursorTrailEnabled(true);
+      }
+    } catch {
+      // ignore storage read issues
+    }
+
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
   return (
-    <header className="fixed left-0 top-0 z-50 flex w-full justify-center px-3 text-foreground md:px-10">
-      <div className="container relative border-b border-border/50 bg-background/80 backdrop-blur-sm">
-        <div className="flex h-20 items-center justify-between gap-2 md:h-22 md:gap-5">
-          <Link className="inline-flex items-center gap-1" href="/">
+    <header className="fixed left-0 top-0 z-50 flex w-full justify-center px-3 pt-3 text-foreground md:px-6">
+      <div className="relative w-full max-w-[1220px]">
+        <div className="relative overflow-visible rounded-2xl border border-border/60 bg-background/78 shadow-[0_18px_50px_-28px_rgba(0,0,0,0.42)] backdrop-blur-xl">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_220px_at_50%_-160px,rgba(16,185,129,0.18),transparent_60%)]"
+          />
+
+          <div className="relative flex h-16 items-center justify-between gap-2 px-3 md:gap-4 md:px-4">
+          <Link className="inline-flex items-center gap-1 rounded-xl border border-border/55 bg-background/75 px-2.5 py-1.5 shadow-sm" href="/">
             <Logo />
           </Link>
 
-          <nav className="hidden items-center gap-7 text-sm uppercase tracking-[0.12em] text-muted-foreground lg:flex">
+          <nav className="hidden items-center gap-1 text-[0.84rem] font-medium tracking-[0.06em] text-muted-foreground lg:flex">
             {NAV_LINKS.map((item) => (
-              <a key={item.id} href={item.href} className="hover:text-foreground">
+              <a
+                key={item.id}
+                href={item.href}
+                className="whitespace-nowrap rounded-full border border-transparent px-2.5 py-1.5 transition-colors hover:border-border/65 hover:bg-muted/60 hover:text-foreground"
+              >
                 {item.label}
               </a>
             ))}
@@ -51,7 +95,7 @@ export function Header() {
               href={EXTERNAL_LINKS[0].href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-emerald-500 hover:text-emerald-400"
+              className="whitespace-nowrap rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1.5 text-emerald-500 transition-colors hover:bg-emerald-500/16 hover:text-emerald-400"
             >
               {EXTERNAL_LINKS[0].label}
             </a>
@@ -63,34 +107,49 @@ export function Header() {
               <span className="relative inline-flex size-full rounded-full bg-emerald-300" />
             </div>
 
-            <div className="hidden text-sm font-medium text-muted-foreground sm:block">
+            <div className="hidden whitespace-nowrap text-xs font-medium text-muted-foreground xl:block">
               Disponible pour des projets
             </div>
 
             <button
               type="button"
+              onClick={toggleCursorTrail}
+              className={`inline-flex h-8 w-8 items-center justify-center rounded-xl border transition-colors ${
+                cursorTrailEnabled
+                  ? "border-emerald-500/45 bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/16"
+                  : "border-border/60 bg-background/75 text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+              }`}
+              aria-label={cursorTrailEnabled ? "Désactiver la traînée de souris" : "Activer la traînée de souris"}
+              aria-pressed={cursorTrailEnabled}
+              title={cursorTrailEnabled ? "Traînée souris: activée" : "Traînée souris: désactivée"}
+            >
+              {cursorTrailEnabled ? <MousePointer2 className="h-4 w-4" /> : <MouseOff className="h-4 w-4" />}
+            </button>
+
+            <button
+              type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex items-center justify-center border border-border/60 p-2 text-muted-foreground hover:text-foreground lg:hidden"
+              className="inline-flex items-center justify-center rounded-xl border border-border/60 bg-background/75 p-1.5 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground lg:hidden"
               aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={menuOpen}
               aria-controls="mobile-main-menu"
             >
-              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
 
             <ModeToggle />
           </div>
-        </div>
+          </div>
 
-        {menuOpen ? (
-          <div id="mobile-main-menu" className="border-t border-border/50 bg-background/95 px-3 py-4 lg:hidden">
-            <nav className="grid gap-3 text-sm uppercase tracking-[0.14em] text-foreground/90">
+          {menuOpen ? (
+            <div id="mobile-main-menu" className="border-t border-border/45 bg-background/92 px-3 py-4 backdrop-blur-xl lg:hidden">
+              <nav className="grid gap-2 text-sm uppercase tracking-[0.14em] text-foreground/90">
               {NAV_LINKS.map((item) => (
                 <a
                   key={`mobile-${item.id}`}
                   href={item.href}
                   onClick={() => setMenuOpen(false)}
-                  className="border-b border-border/40 pb-2 hover:text-emerald-400"
+                  className="rounded-xl border border-border/55 bg-background/70 px-3 py-2 hover:text-emerald-400"
                 >
                   {item.label}
                 </a>
@@ -105,14 +164,15 @@ export function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className="text-emerald-500 hover:text-emerald-400"
+                  className="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1.5 text-emerald-500 hover:text-emerald-400"
                 >
                   {item.label}
                 </a>
               ))}
             </div>
-          </div>
-        ) : null}
+            </div>
+          ) : null}
+        </div>
       </div>
     </header>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { createPortal } from "react-dom";
 
 type EvidenceImage = {
   src: string;
@@ -13,6 +14,11 @@ type EvidenceImageGalleryProps = {
 
 export function EvidenceImageGallery({ images }: EvidenceImageGalleryProps) {
   const [activeImage, setActiveImage] = React.useState<EvidenceImage | null>(null);
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   React.useEffect(() => {
     if (!activeImage) {
@@ -57,21 +63,24 @@ export function EvidenceImageGallery({ images }: EvidenceImageGalleryProps) {
         ))}
       </div>
 
-      {activeImage ? (
-        <button
-          type="button"
-          onClick={() => setActiveImage(null)}
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-black/85 p-4"
-          aria-label="Fermer l'aperçu de l'image"
-        >
-          <img
-            src={activeImage.src}
-            alt={activeImage.alt}
-            className="max-h-[92vh] max-w-[96vw] object-contain"
-            onClick={(event) => event.stopPropagation()}
-          />
-        </button>
-      ) : null}
+      {mounted && activeImage
+        ? createPortal(
+            <button
+              type="button"
+              onClick={() => setActiveImage(null)}
+              className="fixed inset-0 z-[200] flex items-center justify-center bg-black/92 p-4"
+              aria-label="Fermer l'aperçu de l'image"
+            >
+              <img
+                src={activeImage.src}
+                alt={activeImage.alt}
+                className="max-h-[92vh] max-w-[96vw] object-contain"
+                onClick={(event) => event.stopPropagation()}
+              />
+            </button>,
+            document.body,
+          )
+        : null}
     </>
   );
 }

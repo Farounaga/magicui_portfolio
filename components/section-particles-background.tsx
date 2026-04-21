@@ -14,14 +14,14 @@ type SectionTheme = {
 };
 
 const SECTION_THEMES: SectionTheme[] = [
-  { id: "hero", tintLight: "#2f6e86", tintDark: "#7bc9e4", drift: 15, scale: 1.0 },
-  { id: "services", tintLight: "#2f6f7f", tintDark: "#79c8db", drift: 14, scale: 1.02 },
-  { id: "presentation-section", tintLight: "#2f7a76", tintDark: "#7fd4c7", drift: 13, scale: 0.98 },
+  { id: "hero", tintLight: "#345b8f", tintDark: "#8eb2e8", drift: 15, scale: 1.0 },
+  { id: "services", tintLight: "#305a88", tintDark: "#89b1e0", drift: 14, scale: 1.02 },
+  { id: "presentation-section", tintLight: "#2f5f92", tintDark: "#8ab9ee", drift: 13, scale: 0.98 },
   { id: "etudes-section", tintLight: "#405f86", tintDark: "#9db7e2", drift: 12, scale: 1.0 },
-  { id: "experience-section", tintLight: "#356a85", tintDark: "#84c8e0", drift: 13, scale: 1.03 },
-  { id: "competences-section", tintLight: "#2f7b73", tintDark: "#83d3c7", drift: 16, scale: 1.04 },
+  { id: "experience-section", tintLight: "#35618d", tintDark: "#8eb8e4", drift: 13, scale: 1.03 },
+  { id: "competences-section", tintLight: "#325f8d", tintDark: "#8cb9eb", drift: 16, scale: 1.04 },
   { id: "realisations-section", tintLight: "#3f6387", tintDark: "#8eb2dc", drift: 14, scale: 1.02 },
-  { id: "veille-section", tintLight: "#2f7d82", tintDark: "#84d7dc", drift: 17, scale: 1.06 },
+  { id: "veille-section", tintLight: "#33638f", tintDark: "#90c0ed", drift: 17, scale: 1.06 },
   { id: "contact-section", tintLight: "#4d6488", tintDark: "#a8b8df", drift: 11, scale: 0.97 },
 ];
 
@@ -163,40 +163,6 @@ function resolveBlend(centerY: number, map: Array<{ top: number; theme: SectionT
   return { from: last, to: last, mix: 0 };
 }
 
-function drawPolygon(
-  ctx: CanvasRenderingContext2D,
-  sides: number,
-  radius: number,
-  cx: number,
-  cy: number,
-  rotation: number,
-  wobble: number,
-  time: number,
-  react: number,
-) {
-  const points: Array<{ x: number; y: number }> = [];
-  const step = (Math.PI * 2) / sides;
-
-  for (let i = 0; i < sides; i += 1) {
-    const angle = rotation + i * step;
-    const wave = Math.sin(time * 1.9 + i * 1.13) * wobble + Math.cos(time * 1.2 + i * 0.71) * wobble * 0.55;
-    const r = radius * (1 + wave + react * 0.22);
-    points.push({
-      x: cx + Math.cos(angle) * r,
-      y: cy + Math.sin(angle) * r,
-    });
-  }
-
-  ctx.beginPath();
-  ctx.moveTo(points[0].x, points[0].y);
-  for (let i = 1; i < points.length; i += 1) {
-    ctx.lineTo(points[i].x, points[i].y);
-  }
-  ctx.closePath();
-
-  return points;
-}
-
 export function SectionParticlesBackground() {
   const canvasRef = React.useRef<HTMLCanvasElement>(null);
   const reducedMotionRef = React.useRef(false);
@@ -242,8 +208,65 @@ export function SectionParticlesBackground() {
     let frame = 0;
     let sectionMap = buildSectionMap();
     let lastMapRefresh = 0;
+    let lastFrameMs = 0;
     const bandFloor = new Array<number>(128).fill(0.02);
     const bandPeak = new Array<number>(128).fill(0.28);
+    let lastBeat = 0;
+    const burstNodes: Array<{
+      angle: number;
+      radius: number;
+      radialSpeed: number;
+      orbitSpeed: number;
+      life: number;
+      maxLife: number;
+      size: number;
+      mix: number;
+    }> = [];
+    const shockRings: Array<{
+      radius: number;
+      speed: number;
+      life: number;
+      maxLife: number;
+      thickness: number;
+    }> = [];
+    const flowNodes: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      life: number;
+      maxLife: number;
+      size: number;
+      mix: number;
+    }> = [];
+    const arcSegments: Array<{
+      angle: number;
+      radius: number;
+      speed: number;
+      length: number;
+      life: number;
+      maxLife: number;
+      thickness: number;
+      mix: number;
+    }> = [];
+    const pulseTiles: Array<{
+      angle: number;
+      radius: number;
+      spin: number;
+      life: number;
+      maxLife: number;
+      scale: number;
+      mix: number;
+    }> = [];
+    const glitchRays: Array<{
+      angle: number;
+      length: number;
+      speed: number;
+      life: number;
+      maxLife: number;
+      width: number;
+      mix: number;
+    }> = [];
 
     const resize = () => {
       width = window.innerWidth;
@@ -262,6 +285,8 @@ export function SectionParticlesBackground() {
 
     const render = (ms: number) => {
       const t = ms * 0.001;
+      const deltaMs = Math.min(48, lastFrameMs === 0 ? 16 : ms - lastFrameMs);
+      lastFrameMs = ms;
       const audio = energyRef.current;
 
       if (ms - lastMapRefresh > 700) {
@@ -278,8 +303,13 @@ export function SectionParticlesBackground() {
       const themeTint = mixRgb(tintA, tintB, blend.mix);
 
       const cyberBase = isDark ? hexToRgb("#7ce4d5") : hexToRgb("#0f8f8c");
-      const cyberAccent = mixRgb(cyberBase, themeTint, 0.45);
-      const cyberAccent2 = mixRgb(cyberAccent, isDark ? hexToRgb("#9fb3dd") : hexToRgb("#3f5d8a"), 0.35);
+      const cyberAccent = mixRgb(cyberBase, themeTint, 0.52);
+      const cyberAccent2 = mixRgb(cyberAccent, isDark ? hexToRgb("#9fb3dd") : hexToRgb("#3f5d8a"), 0.42);
+      const coreCenterColor = mixRgb(
+        isDark ? hexToRgb("#77e8cf") : hexToRgb("#1aa08a"),
+        cyberAccent2,
+        0.2,
+      );
 
       const drift = blend.from.drift + (blend.to.drift - blend.from.drift) * blend.mix;
       const scaleMul = blend.from.scale + (blend.to.scale - blend.from.scale) * blend.mix;
@@ -327,155 +357,489 @@ export function SectionParticlesBackground() {
 
       if (coreVisible) {
         const glow = ctx.createRadialGradient(cx, cy, base * 0.15, cx, cy, base * 1.7);
-        glow.addColorStop(0, rgba(cyberAccent, isDark ? 0.08 : 0.05));
+        glow.addColorStop(0, rgba(cyberAccent, isDark ? 0.09 : 0.06));
         glow.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = glow;
         ctx.fillRect(0, 0, width, height);
 
-        const outerSides = reducedMotionRef.current ? 8 : 8 + Math.round(lowReact * 4);
-        const middleSides = reducedMotionRef.current ? 6 : 6 + Math.round(midReact * 4);
-        const innerSides = 5 + Math.round(highReact * 4);
+        const coreActivity = clamp01(overall * 0.58 + beat * 0.42);
+        const beatRising = beat > 0.56 && lastBeat <= 0.56;
+        lastBeat = beat;
 
-        const outerRot = t * (0.13 + lowReact * 0.22);
-        const middleRot = -t * (0.17 + midReact * 0.24);
-        const innerRot = t * (0.24 + highReact * 0.34);
+        if (beatRising) {
+          const nodeCount = Math.max(5, Math.floor(7 + beat * 9 + highReact * 6));
+          for (let i = 0; i < nodeCount; i += 1) {
+            burstNodes.push({
+              angle: Math.random() * Math.PI * 2,
+              radius: base * (0.3 + Math.random() * 0.35),
+              radialSpeed: base * (0.44 + Math.random() * 0.74) * (0.001 + beat * 0.0008),
+              orbitSpeed: (Math.random() * 2 - 1) * (0.7 + highReact * 1.8),
+              life: 1,
+              maxLife: 680 + Math.random() * 900,
+              size: 1.8 + Math.random() * 4.2,
+              mix: Math.random(),
+            });
+          }
+          const flowSpawn = Math.max(8, Math.floor(12 + beat * 14 + midReact * 8));
+          for (let i = 0; i < flowSpawn; i += 1) {
+            const angle = Math.random() * Math.PI * 2;
+            const radius = base * (0.32 + Math.random() * 0.6);
+            flowNodes.push({
+              x: cx + Math.cos(angle) * radius,
+              y: cy + Math.sin(angle) * radius,
+              vx: (Math.random() * 2 - 1) * 0.05,
+              vy: (Math.random() * 2 - 1) * 0.05,
+              life: 1,
+              maxLife: 700 + Math.random() * 980,
+              size: 1.2 + Math.random() * 2.8,
+              mix: Math.random(),
+            });
+          }
+          const segments = Math.max(10, Math.floor(14 + beat * 12 + treble * 8));
+          for (let i = 0; i < segments; i += 1) {
+            arcSegments.push({
+              angle: Math.random() * Math.PI * 2,
+              radius: base * (0.92 + Math.random() * 0.96),
+              speed: (Math.random() * 2 - 1) * (0.5 + highReact * 2.4),
+              length: 0.08 + Math.random() * 0.16,
+              life: 1,
+              maxLife: 560 + Math.random() * 780,
+              thickness: 0.7 + Math.random() * 1.3,
+              mix: Math.random(),
+            });
+          }
+          shockRings.push({
+            radius: base * (0.34 + beat * 0.12),
+            speed: base * (0.0009 + lowReact * 0.0014),
+            life: 1,
+            maxLife: 900 + beat * 520,
+            thickness: 0.9 + beat * 1.5,
+          });
+          const tileCount = Math.max(6, Math.floor(8 + coreActivity * 14 + midReact * 8));
+          for (let i = 0; i < tileCount; i += 1) {
+            pulseTiles.push({
+              angle: Math.random() * Math.PI * 2,
+              radius: base * (0.98 + Math.random() * 1.22),
+              spin: (Math.random() * 2 - 1) * (0.8 + highReact * 2),
+              life: 1,
+              maxLife: 540 + Math.random() * 760,
+              scale: 1.3 + Math.random() * 4,
+              mix: Math.random(),
+            });
+          }
+          const rayCount = Math.max(5, Math.floor(7 + coreActivity * 10 + treble * 10));
+          for (let i = 0; i < rayCount; i += 1) {
+            glitchRays.push({
+              angle: Math.random() * Math.PI * 2,
+              length: base * (0.38 + Math.random() * 1.34),
+              speed: (Math.random() * 2 - 1) * (1 + highReact * 2.6),
+              life: 1,
+              maxLife: 420 + Math.random() * 560,
+              width: 0.6 + Math.random() * 1.3,
+              mix: Math.random(),
+            });
+          }
+        }
 
-        const outerPoints = drawPolygon(
-          ctx,
-          outerSides,
-          base * (1.34 + beat * 0.2),
-          cx,
-          cy,
-          outerRot,
-          reducedMotionRef.current ? 0.015 : 0.035,
-          t,
-          lowReact,
-        );
-        ctx.strokeStyle = rgba(cyberAccent2, isDark ? 0.42 : 0.32);
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
+        if (!reducedMotionRef.current && Math.random() < 0.015 + beat * 0.045) {
+          burstNodes.push({
+            angle: Math.random() * Math.PI * 2,
+            radius: base * (0.32 + Math.random() * 0.2),
+            radialSpeed: base * (0.42 + Math.random() * 0.5) * 0.00075,
+            orbitSpeed: (Math.random() * 2 - 1) * (0.4 + highReact * 1.2),
+            life: 1,
+            maxLife: 420 + Math.random() * 520,
+            size: 1.4 + Math.random() * 3,
+            mix: Math.random(),
+          });
+          flowNodes.push({
+            x: cx + (Math.random() * 2 - 1) * base * 0.45,
+            y: cy + (Math.random() * 2 - 1) * base * 0.45,
+            vx: (Math.random() * 2 - 1) * 0.06,
+            vy: (Math.random() * 2 - 1) * 0.06,
+            life: 1,
+            maxLife: 420 + Math.random() * 520,
+            size: 1 + Math.random() * 2.2,
+            mix: Math.random(),
+          });
+        }
+        if (!reducedMotionRef.current && Math.random() < 0.012 + coreActivity * 0.03) {
+          pulseTiles.push({
+            angle: Math.random() * Math.PI * 2,
+            radius: base * (0.96 + Math.random() * 0.85),
+            spin: (Math.random() * 2 - 1) * (0.5 + highReact * 1.3),
+            life: 1,
+            maxLife: 360 + Math.random() * 520,
+            scale: 1 + Math.random() * 2.8,
+            mix: Math.random(),
+          });
+        }
+        if (!reducedMotionRef.current && Math.random() < 0.01 + coreActivity * 0.028) {
+          glitchRays.push({
+            angle: Math.random() * Math.PI * 2,
+            length: base * (0.34 + Math.random() * 0.78),
+            speed: (Math.random() * 2 - 1) * (0.9 + highReact * 1.8),
+            life: 1,
+            maxLife: 340 + Math.random() * 430,
+            width: 0.5 + Math.random() * 1,
+            mix: Math.random(),
+          });
+        }
 
-        const middlePoints = drawPolygon(
-          ctx,
-          middleSides,
-          base * (1.0 + overall * 0.18),
-          cx,
-          cy,
-          middleRot,
-          reducedMotionRef.current ? 0.02 : 0.05,
-          t + 0.6,
-          midReact,
-        );
-        ctx.fillStyle = rgba(cyberAccent, isDark ? 0.06 : 0.045);
-        ctx.fill();
-        ctx.strokeStyle = rgba(cyberAccent, isDark ? 0.5 : 0.36);
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
+        if (burstNodes.length > 260) {
+          burstNodes.splice(0, burstNodes.length - 260);
+        }
+        if (flowNodes.length > 340) {
+          flowNodes.splice(0, flowNodes.length - 340);
+        }
+        if (arcSegments.length > 220) {
+          arcSegments.splice(0, arcSegments.length - 220);
+        }
+        if (shockRings.length > 20) {
+          shockRings.splice(0, shockRings.length - 20);
+        }
+        if (pulseTiles.length > 260) {
+          pulseTiles.splice(0, pulseTiles.length - 260);
+        }
+        if (glitchRays.length > 220) {
+          glitchRays.splice(0, glitchRays.length - 220);
+        }
 
-        const innerPoints = drawPolygon(
-          ctx,
-          innerSides,
-          base * (0.66 + beat * 0.22),
-          cx,
-          cy,
-          innerRot,
-          reducedMotionRef.current ? 0.01 : 0.03,
-          t + 1.2,
-          highReact,
-        );
-        ctx.strokeStyle = rgba(cyberAccent2, isDark ? 0.55 : 0.42);
-        ctx.lineWidth = 1.1;
-        ctx.stroke();
+        const meshLayers = reducedMotionRef.current ? 2 : isMobile ? 3 : 5;
+        for (let layer = 0; layer < meshLayers; layer += 1) {
+          const samples = isMobile ? 36 : 64;
+          const layerMix = layer / Math.max(1, meshLayers - 1);
+          const baseRadius = base * (0.52 + layer * 0.2 + lowReact * 0.08);
 
-        const links = Math.min(outerPoints.length, middlePoints.length);
-        for (let i = 0; i < links; i += 1) {
-          const a = outerPoints[i];
-          const b = middlePoints[(i * 2) % middlePoints.length];
-          ctx.strokeStyle = rgba(cyberAccent, (isDark ? 0.2 : 0.14) * (0.8 + beat));
-          ctx.lineWidth = 0.8;
           ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
+          for (let i = 0; i <= samples; i += 1) {
+            const k = i / samples;
+            const band = sampleSpectrum(spectrum, (k + layerMix * 0.19) % 1);
+            const wave = waveform[Math.floor(k * Math.max(0, waveform.length - 1))] ?? 0;
+            const warp =
+              Math.sin(t * (1 + layer * 0.27) + k * 12.6) * base * 0.04 +
+              Math.cos(t * (1.6 + layer * 0.18) + k * 8.9) * base * 0.03;
+            const radius = baseRadius + band * base * 0.24 + wave * base * 0.14 + beat * base * 0.08 + warp;
+            const angle = k * Math.PI * 2 + t * (0.18 + layer * 0.07) * (layer % 2 === 0 ? 1 : -1);
+            const x = cx + Math.cos(angle + wave * 0.12) * radius;
+            const y = cy + Math.sin(angle * (1.02 + layer * 0.03) - wave * 0.1) * radius * 0.9;
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+          const meshColor = mixRgb(coreCenterColor, cyberAccent2, layerMix * 0.9);
+          ctx.strokeStyle = rgba(meshColor, isDark ? 0.24 + layerMix * 0.14 : 0.18 + layerMix * 0.1);
+          ctx.lineWidth = 0.8 + layer * 0.32;
           ctx.stroke();
         }
 
-        const innerLinks = Math.min(middlePoints.length, innerPoints.length);
-        for (let i = 0; i < innerLinks; i += 1) {
-          const a = middlePoints[i];
-          const b = innerPoints[(i + 1) % innerPoints.length];
-          ctx.strokeStyle = rgba(cyberAccent2, (isDark ? 0.17 : 0.12) * (0.7 + treble));
-          ctx.lineWidth = 0.7;
+        const shardCount = reducedMotionRef.current ? 32 : isMobile ? 48 : 82;
+        for (let i = 0; i < shardCount; i += 1) {
+          const k = i / Math.max(1, shardCount - 1);
+          const band = sampleSpectrum(spectrum, k);
+          const wave = waveform[Math.floor(k * Math.max(0, waveform.length - 1))] ?? 0;
+          const angle = k * Math.PI * 2 + t * (0.38 + highReact * 0.28);
+          const radius = base * (0.24 + ((i * 17) % 100) / 100 * 0.66 + band * 0.26 + beat * 0.08);
+          const x = cx + Math.cos(angle) * radius;
+          const y = cy + Math.sin(angle * 1.07 + wave * 0.8) * radius * 0.84;
+          const size = 1.2 + band * 3.2 + Math.abs(wave) * 1.8;
+          const color = mixRgb(coreCenterColor, cyberAccent2, k);
+          ctx.fillStyle = rgba(color, isDark ? 0.3 + band * 0.34 : 0.24 + band * 0.26);
+          ctx.fillRect(x - size * 0.5, y - size * 0.5, size, size);
+        }
+
+        const orbitPixels = reducedMotionRef.current ? 26 : isMobile ? 34 : 52;
+        for (let i = 0; i < orbitPixels; i += 1) {
+          const k = i / Math.max(1, orbitPixels - 1);
+          const bandValue = sampleSpectrum(spectrum, k);
+          const angle = k * Math.PI * 2 + t * (0.08 + highReact * 0.06);
+          const radius = base * (1.34 + bandValue * 0.3 + beat * 0.08);
+          const px = cx + Math.cos(angle) * radius;
+          const py = cy + Math.sin(angle) * radius;
+          const size = 1.5 + bandValue * 3.4;
+          const color = mixRgb(cyberAccent, cyberAccent2, k);
+          ctx.fillStyle = rgba(color, isDark ? 0.56 : 0.42);
+          ctx.fillRect(px - size * 0.5, py - size * 0.5, size, size);
+        }
+
+        const scannerCount = reducedMotionRef.current ? 1 : isMobile ? 2 : 3;
+        for (let i = 0; i < scannerCount; i += 1) {
+          const dir = i % 2 === 0 ? 1 : -1;
+          const phase = t * (0.35 + i * 0.11 + coreActivity * 0.06) * dir + i * 1.7;
+          const sweep = 0.18 + highReact * 0.1 + coreActivity * 0.06;
+          const innerR = base * (0.46 + i * 0.2);
+          const outerR = base * (1.56 + i * 0.26 + beat * 0.1);
+          const scannerColor = mixRgb(cyberAccent, cyberAccent2, i / Math.max(1, scannerCount - 1));
+          const alpha = (isDark ? 0.14 : 0.1) * (0.9 + coreActivity * 0.8);
+          ctx.fillStyle = rgba(scannerColor, alpha);
           ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.lineTo(b.x, b.y);
+          ctx.arc(cx, cy, outerR, phase, phase + sweep);
+          ctx.arc(cx, cy, innerR, phase + sweep, phase, true);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        const cometCount = reducedMotionRef.current ? 2 : isMobile ? 4 : 7;
+        for (let i = 0; i < cometCount; i += 1) {
+          const kBase = i / Math.max(1, cometCount);
+          const orbitT = (kBase + t * (0.05 + i * 0.003 + coreActivity * 0.01)) % 1;
+          const band = sampleSpectrum(spectrum, (orbitT + i * 0.13) % 1);
+          const wave = waveform[Math.floor(orbitT * Math.max(0, waveform.length - 1))] ?? 0;
+          const angle = orbitT * Math.PI * 2 + Math.sin(t * (0.7 + i * 0.12) + i * 2.1) * 0.22;
+          const radius = base * (1.08 + (((i * 37) % 100) / 100) * 0.9 + band * 0.24 + beat * 0.08);
+          const x = cx + Math.cos(angle) * radius;
+          const y = cy + Math.sin(angle * 1.03 + wave * 0.28) * radius * 0.9;
+          const tail = base * (0.15 + band * 0.26 + coreActivity * 0.17);
+          const tx = x - Math.cos(angle) * tail;
+          const ty = y - Math.sin(angle) * tail;
+          const cometColor = mixRgb(coreCenterColor, cyberAccent2, kBase);
+          ctx.strokeStyle = rgba(cometColor, isDark ? 0.3 + band * 0.28 : 0.22 + band * 0.2);
+          ctx.lineWidth = 0.9 + band * 1.2;
+          ctx.beginPath();
+          ctx.moveTo(tx, ty);
+          ctx.lineTo(x, y);
+          ctx.stroke();
+          const size = 1.6 + band * 2.4 + coreActivity * 1.2;
+          ctx.fillStyle = rgba(cometColor, isDark ? 0.58 : 0.44);
+          ctx.fillRect(x - size * 0.5, y - size * 0.5, size, size);
+        }
+
+        for (let i = burstNodes.length - 1; i >= 0; i -= 1) {
+          const node = burstNodes[i];
+          const dt = deltaMs;
+          node.life -= dt / node.maxLife;
+          node.radius += node.radialSpeed * dt;
+          node.angle += node.orbitSpeed * 0.001 * dt;
+
+          if (node.life <= 0) {
+            burstNodes.splice(i, 1);
+            continue;
+          }
+
+          const lifeT = clamp01(node.life);
+          const x = cx + Math.cos(node.angle) * node.radius;
+          const y = cy + Math.sin(node.angle) * node.radius;
+          const size = node.size * (0.8 + beat * 0.5 + lifeT * 0.35);
+          const color = mixRgb(coreCenterColor, cyberAccent2, node.mix);
+          const alpha = (isDark ? 0.52 : 0.4) * lifeT * (0.7 + beat * 0.5);
+          ctx.fillStyle = rgba(color, alpha);
+          ctx.fillRect(x - size * 0.5, y - size * 0.5, size, size);
+        }
+
+        for (let i = shockRings.length - 1; i >= 0; i -= 1) {
+          const ring = shockRings[i];
+          const dt = deltaMs;
+          ring.life -= dt / ring.maxLife;
+          ring.radius += ring.speed * dt;
+
+          if (ring.life <= 0) {
+            shockRings.splice(i, 1);
+            continue;
+          }
+
+          const alpha = (isDark ? 0.48 : 0.34) * Math.pow(clamp01(ring.life), 1.15);
+          ctx.strokeStyle = rgba(coreCenterColor, alpha);
+          ctx.lineWidth = ring.thickness;
+          ctx.beginPath();
+          ctx.arc(cx, cy, ring.radius, 0, Math.PI * 2);
           ctx.stroke();
         }
 
-        const radialBars = reducedMotionRef.current ? 32 : isMobile ? 40 : 72;
-        for (let i = 0; i < radialBars; i += 1) {
-          const angle = (i / radialBars) * Math.PI * 2 + t * 0.075;
-          const bandValue = sampleSpectrum(spectrum, i / Math.max(1, radialBars - 1));
-          const fromR = base * 1.43;
-          const len = base * (0.05 + bandValue * 0.34 + beat * 0.08);
-          const x1 = cx + Math.cos(angle) * fromR;
-          const y1 = cy + Math.sin(angle) * fromR;
-          const x2 = cx + Math.cos(angle) * (fromR + len);
-          const y2 = cy + Math.sin(angle) * (fromR + len);
+        const ribbonCount = reducedMotionRef.current ? 1 : isMobile ? 2 : 3;
+        for (let ribbon = 0; ribbon < ribbonCount; ribbon += 1) {
+          const samples = isMobile ? 44 : 70;
+          const baseRadius = base * (0.74 + ribbon * 0.22 + lowReact * 0.08);
+          ctx.beginPath();
+          for (let i = 0; i <= samples; i += 1) {
+            const k = i / samples;
+            const sv = sampleSpectrum(spectrum, (k + ribbon * 0.17) % 1);
+            const wave = waveform[Math.floor(k * (waveform.length - 1))] ?? 0;
+            const wobble =
+              Math.sin(t * (0.9 + ribbon * 0.22) + k * 12.4) * base * 0.05 +
+              Math.cos(t * (1.4 + ribbon * 0.16) + k * 9.1) * base * 0.035;
+            const radius =
+              baseRadius +
+              sv * base * 0.25 +
+              wave * base * 0.16 +
+              beat * base * 0.08 +
+              wobble;
+            const angle = k * Math.PI * 2 + t * (0.22 + ribbon * 0.08);
+            const x = cx + Math.cos(angle + wave * 0.12) * radius;
+            const y = cy + Math.sin(angle * (1.04 + ribbon * 0.02) - wave * 0.1) * radius * 0.9;
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+          const ribbonColor = mixRgb(coreCenterColor, cyberAccent2, ribbon / Math.max(1, ribbonCount - 1));
+          ctx.strokeStyle = rgba(ribbonColor, isDark ? 0.24 : 0.18);
+          ctx.lineWidth = 0.85 + ribbon * 0.35;
+          ctx.stroke();
+        }
 
-          const mix = i / Math.max(1, radialBars - 1);
-          const barColor = mixRgb(cyberAccent, cyberAccent2, mix);
-          ctx.strokeStyle = rgba(barColor, (isDark ? 0.4 : 0.28) * (0.7 + bandValue));
-          ctx.lineWidth = 0.9 + bandValue * 1.2;
+        for (let i = flowNodes.length - 1; i >= 0; i -= 1) {
+          const node = flowNodes[i];
+          const prevX = node.x;
+          const prevY = node.y;
+          const dt = deltaMs;
+          node.life -= dt / node.maxLife;
+
+          if (node.life <= 0) {
+            flowNodes.splice(i, 1);
+            continue;
+          }
+
+          const dx = node.x - cx;
+          const dy = node.y - cy;
+          const dist = Math.max(1, Math.hypot(dx, dy));
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const tx = -ny;
+          const ty = nx;
+          const band = sampleSpectrum(spectrum, node.mix);
+          const waveIdx = Math.floor(node.mix * Math.max(0, waveform.length - 1));
+          const wave = waveform[waveIdx] ?? 0;
+
+          const radialPush = (beat - 0.24) * 0.02 + band * 0.015;
+          const swirlPush = 0.02 + treble * 0.035 + Math.abs(wave) * 0.024;
+          node.vx += (tx * swirlPush + nx * radialPush) * dt;
+          node.vy += (ty * swirlPush + ny * radialPush) * dt;
+          node.vx *= 0.974;
+          node.vy *= 0.974;
+
+          node.x += node.vx * 0.07;
+          node.y += node.vy * 0.07;
+
+          const newDx = node.x - cx;
+          const newDy = node.y - cy;
+          const newDist = Math.hypot(newDx, newDy);
+          if (newDist > base * 2.8) {
+            flowNodes.splice(i, 1);
+            continue;
+          }
+
+          const lifeT = clamp01(node.life);
+          const nodeColor = mixRgb(coreCenterColor, cyberAccent2, node.mix);
+          const trailAlpha = (isDark ? 0.2 : 0.14) * lifeT * (0.8 + band);
+          ctx.strokeStyle = rgba(nodeColor, trailAlpha);
+          ctx.lineWidth = Math.max(0.8, node.size * 0.55);
+          ctx.beginPath();
+          ctx.moveTo(prevX, prevY);
+          ctx.lineTo(node.x, node.y);
+          ctx.stroke();
+
+          const size = node.size * (0.9 + beat * 0.6 + band * 0.35);
+          const alpha = (isDark ? 0.56 : 0.42) * lifeT * (0.72 + band * 0.4);
+          ctx.fillStyle = rgba(nodeColor, alpha);
+          ctx.fillRect(node.x - size * 0.5, node.y - size * 0.5, size, size);
+        }
+
+        for (let i = arcSegments.length - 1; i >= 0; i -= 1) {
+          const segment = arcSegments[i];
+          const dt = deltaMs;
+          segment.life -= dt / segment.maxLife;
+          if (segment.life <= 0) {
+            arcSegments.splice(i, 1);
+            continue;
+          }
+
+          const band = sampleSpectrum(spectrum, segment.mix);
+          segment.angle += segment.speed * 0.001 * dt * (0.8 + band * 0.5);
+          segment.radius += (band - 0.5) * base * 0.00035 * dt;
+          segment.radius = clamp01(segment.radius / (base * 2.6)) * (base * 2.6);
+          segment.radius = Math.max(base * 0.58, segment.radius);
+          const length = segment.length * (0.75 + band * 0.9 + beat * 0.22);
+          const color = mixRgb(cyberAccent, cyberAccent2, segment.mix);
+          const alpha = (isDark ? 0.44 : 0.3) * Math.pow(clamp01(segment.life), 1.1);
+          ctx.strokeStyle = rgba(color, alpha);
+          ctx.lineWidth = segment.thickness * (0.8 + band * 0.8);
+          ctx.beginPath();
+          ctx.arc(cx, cy, segment.radius, segment.angle, segment.angle + length);
+          ctx.stroke();
+        }
+
+        for (let i = pulseTiles.length - 1; i >= 0; i -= 1) {
+          const tile = pulseTiles[i];
+          const dt = deltaMs;
+          tile.life -= dt / tile.maxLife;
+          if (tile.life <= 0) {
+            pulseTiles.splice(i, 1);
+            continue;
+          }
+          const band = sampleSpectrum(spectrum, tile.mix);
+          tile.angle += tile.spin * 0.001 * dt * (0.72 + band * 0.75);
+          tile.radius += Math.sin(t * 2.2 + tile.mix * 12.4) * base * 0.00024 * dt;
+          tile.radius = Math.max(base * 0.82, Math.min(base * 2.42, tile.radius));
+          const lifeT = clamp01(tile.life);
+          const size = tile.scale * (0.95 + band * 1.15 + coreActivity * 0.8);
+          const x = cx + Math.cos(tile.angle) * tile.radius;
+          const y = cy + Math.sin(tile.angle * 1.06) * tile.radius * 0.88;
+          const tileColor = mixRgb(cyberAccent, cyberAccent2, tile.mix);
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(tile.angle + t * 0.3);
+          ctx.fillStyle = rgba(tileColor, (isDark ? 0.42 : 0.3) * lifeT * (0.72 + band * 0.7));
+          ctx.fillRect(-size * 0.5, -size * 0.5, size, size * 0.64);
+          ctx.restore();
+        }
+
+        for (let i = glitchRays.length - 1; i >= 0; i -= 1) {
+          const ray = glitchRays[i];
+          const dt = deltaMs;
+          ray.life -= dt / ray.maxLife;
+          if (ray.life <= 0) {
+            glitchRays.splice(i, 1);
+            continue;
+          }
+          const band = sampleSpectrum(spectrum, ray.mix);
+          ray.angle += ray.speed * 0.001 * dt * (0.72 + highReact * 0.45);
+          const startR = base * (0.2 + band * 0.16);
+          const endR = startR + ray.length * (0.74 + band * 1.2 + beat * 0.44);
+          const x1 = cx + Math.cos(ray.angle) * startR;
+          const y1 = cy + Math.sin(ray.angle) * startR;
+          const x2 = cx + Math.cos(ray.angle) * endR;
+          const y2 = cy + Math.sin(ray.angle) * endR;
+          const rayColor = mixRgb(coreCenterColor, cyberAccent2, ray.mix);
+          ctx.strokeStyle = rgba(rayColor, (isDark ? 0.44 : 0.32) * Math.pow(clamp01(ray.life), 1.12));
+          ctx.lineWidth = ray.width * (0.9 + band * 0.85);
           ctx.beginPath();
           ctx.moveTo(x1, y1);
           ctx.lineTo(x2, y2);
           ctx.stroke();
         }
 
-        const ringSamples = reducedMotionRef.current ? 40 : isMobile ? 56 : 96;
-        ctx.beginPath();
-        for (let i = 0; i <= ringSamples; i += 1) {
-          const k = i / ringSamples;
-          const angle = k * Math.PI * 2 - Math.PI / 2 + t * 0.05;
-          const sv = sampleSpectrum(spectrum, k);
-          const radius = base * (1.16 + sv * 0.28 + beat * 0.06);
-          const x = cx + Math.cos(angle) * radius;
-          const y = cy + Math.sin(angle) * radius;
-          if (i === 0) {
-            ctx.moveTo(x, y);
-          } else {
-            ctx.lineTo(x, y);
-          }
-        }
-        ctx.closePath();
-        ctx.strokeStyle = rgba(cyberAccent2, isDark ? 0.46 : 0.34);
-        ctx.lineWidth = 1.15;
-        ctx.stroke();
-
-        const satelliteCount = 4;
-        for (let i = 0; i < satelliteCount; i += 1) {
-          const angle = t * (0.18 + i * 0.03) + (i / satelliteCount) * Math.PI * 2;
-          const orbit = base * (1.78 + Math.sin(t * 0.8 + i) * 0.08);
-          const x = cx + Math.cos(angle) * orbit;
-          const y = cy + Math.sin(angle) * orbit;
-          const size = base * (0.05 + bass * 0.04);
-          const rot = -angle + t * 0.16;
-
-          ctx.save();
-          ctx.translate(x, y);
-          ctx.rotate(rot);
-          ctx.strokeStyle = rgba(cyberAccent2, isDark ? 0.48 : 0.34);
-          ctx.lineWidth = 1.2;
-          ctx.strokeRect(-size, -size, size * 2, size * 2);
-          ctx.restore();
-
-          ctx.strokeStyle = rgba(cyberAccent, isDark ? 0.24 : 0.16);
-          ctx.lineWidth = 0.8;
+        const spokeCount = reducedMotionRef.current ? 10 : isMobile ? 16 : 24;
+        for (let i = 0; i < spokeCount; i += 1) {
+          const k = i / Math.max(1, spokeCount);
+          const band = sampleSpectrum(spectrum, k);
+          const angle = k * Math.PI * 2 + t * (0.18 + midReact * 0.05) * (i % 2 === 0 ? 1 : -1);
+          const startR = base * (0.32 + ((i * 13) % 9) * 0.03);
+          const endR = startR + base * (0.68 + band * 0.72 + coreActivity * 0.34);
+          const x1 = cx + Math.cos(angle) * startR;
+          const y1 = cy + Math.sin(angle) * startR;
+          const x2 = cx + Math.cos(angle) * endR;
+          const y2 = cy + Math.sin(angle) * endR;
+          const spokeColor = mixRgb(cyberAccent, cyberAccent2, k);
+          ctx.strokeStyle = rgba(spokeColor, isDark ? 0.24 + band * 0.22 : 0.17 + band * 0.16);
+          ctx.lineWidth = 0.7 + band * 0.9;
           ctx.beginPath();
-          ctx.moveTo(cx, cy);
-          ctx.lineTo(x, y);
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x2, y2);
           ctx.stroke();
         }
+
+        const crossSize = base * (1.42 + beat * 0.06);
+        ctx.strokeStyle = rgba(coreCenterColor, isDark ? 0.35 : 0.25);
+        ctx.lineWidth = 0.9;
+        ctx.beginPath();
+        ctx.moveTo(cx - crossSize, cy);
+        ctx.lineTo(cx + crossSize, cy);
+        ctx.moveTo(cx, cy - crossSize);
+        ctx.lineTo(cx, cy + crossSize);
+        ctx.stroke();
       }
 
       if (panelVisible) {

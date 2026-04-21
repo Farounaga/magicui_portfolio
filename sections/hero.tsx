@@ -82,13 +82,14 @@ export function Hero () {
                             "Passionné par l'informatique",
                             ]}
                             mainClassName="inline-flex w-fit max-w-[90vw] overflow-hidden rounded-lg px-2 sm:px-2 md:px-3 py-0.5 sm:py-1 md:py-2 text-center text-base sm:text-lg md:text-xl font-medium tracking-tight bg-emerald-300 text-emerald-950 dark:bg-emerald-400/15 dark:text-emerald-200 dark:ring-1 dark:ring-emerald-300/20"
-                            staggerFrom="last"
-                            initial={{ y: '100%' }}
-                            animate={{ y: 0 }}
-                            exit={{ y: '-120%' }}
-                            staggerDuration={0.025}
+                            splitBy="words"
+                            staggerFrom="center"
+                            initial={{ y: 14, opacity: 0, filter: "blur(8px)", scale: 0.985 }}
+                            animate={{ y: 0, opacity: 1, filter: "blur(0px)", scale: 1 }}
+                            exit={{ y: -12, opacity: 0, filter: "blur(6px)", scale: 1.01 }}
+                            staggerDuration={0.05}
                             splitLevelClassName="overflow-hidden pb-0.5 sm:pb-1 md:pb-1"
-                            transition={{ type: 'spring', damping: 30, stiffness: 400 }}
+                            transition={{ type: 'spring', damping: 24, stiffness: 230, mass: 0.9 }}
                             rotationInterval={4300}
                         />
                     </motion.div>

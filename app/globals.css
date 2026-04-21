@@ -3,11 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 :root {
-  --background: hsl(223.8136 -172.5242% 100.0000%);
+  --background: hsl(0 0% 100%);
   --foreground: hsl(223.8136 0.0000% 3.9388%);
-  --card: hsl(223.8136 -172.5242% 100.0000%);
+  --card: hsl(0 0% 100%);
   --card-foreground: hsl(223.8136 0.0000% 3.9388%);
-  --popover: hsl(223.8136 -172.5242% 100.0000%);
+  --popover: hsl(0 0% 100%);
   --popover-foreground: hsl(223.8136 0.0000% 3.9388%);
   --primary: hsl(223.8136 0.0000% 9.0527%);
   --primary-foreground: hsl(223.8136 0.0004% 98.0256%);

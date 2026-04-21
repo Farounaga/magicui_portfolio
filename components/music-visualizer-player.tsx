@@ -182,11 +182,16 @@ export function MusicVisualizerPlayer() {
 
   return (
     <div
-      className="fixed bottom-2 left-2 right-2 z-[65] border border-border/70 bg-background/86 p-2.5 backdrop-blur-md md:bottom-4 md:left-auto md:right-4 md:w-[min(94vw,360px)] md:p-3"
+      className="fixed bottom-3 left-3 right-3 z-[65] overflow-hidden rounded-2xl border border-border/65 bg-background/80 p-2 shadow-[0_16px_42px_-30px_rgba(0,0,0,0.52)] backdrop-blur-xl md:bottom-4 md:left-auto md:right-4 md:w-[min(88vw,300px)] md:p-2.5"
       style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}
     >
-      <div className="mb-2 flex items-center justify-between gap-2">
-        <div className="inline-flex min-w-0 items-center gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground md:text-xs md:tracking-[0.18em]">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(620px_140px_at_80%_-140px,rgba(16,185,129,0.16),transparent_60%)]"
+      />
+
+      <div className="relative mb-1.5 flex items-center justify-between gap-2">
+        <div className="inline-flex min-w-0 items-center gap-1.5 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
           <ListMusic className="h-3.5 w-3.5 text-emerald-500" />
           <span className="truncate">Visualiseur audio</span>
         </div>
@@ -195,7 +200,7 @@ export function MusicVisualizerPlayer() {
           <button
             type="button"
             onClick={() => setCollapsed((prev) => !prev)}
-            className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500 md:h-8 md:w-8"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/65 bg-background/72 text-foreground transition-colors hover:bg-muted/60 hover:text-emerald-500"
             aria-label={collapsed ? "Déplier" : "Replier"}
           >
             {collapsed ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
@@ -206,7 +211,7 @@ export function MusicVisualizerPlayer() {
               resumeAudio();
               void togglePlayback();
             }}
-            className="inline-flex h-8 w-8 items-center justify-center border border-border/70 text-foreground hover:text-emerald-500 md:h-8 md:w-8"
+            className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/65 bg-background/72 text-foreground transition-colors hover:bg-muted/60 hover:text-emerald-500"
             aria-label={isPlaying ? "Pause" : "Lecture"}
           >
             {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
@@ -216,15 +221,15 @@ export function MusicVisualizerPlayer() {
 
       {!collapsed && (
         <>
-          <div className="space-y-2 text-[10px] uppercase tracking-[0.12em] text-muted-foreground md:text-xs md:tracking-[0.14em]">
+          <div className="relative space-y-1.5 text-[10px] uppercase tracking-[0.12em] text-muted-foreground">
             <div className="flex flex-wrap items-center gap-2">
               <button
                 type="button"
                 onClick={toggleCore}
-                className={`inline-flex h-8 items-center border px-2 md:h-8 ${
+                className={`inline-flex h-7 items-center rounded-full border px-2 ${
                   showCore
-                    ? "border-emerald-500/70 text-emerald-500"
-                    : "border-border/70 text-muted-foreground hover:text-foreground"
+                    ? "border-emerald-500/70 bg-emerald-500/10 text-emerald-500"
+                    : "border-border/70 bg-background/72 text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Core
@@ -232,10 +237,10 @@ export function MusicVisualizerPlayer() {
               <button
                 type="button"
                 onClick={toggleAnalyzer}
-                className={`inline-flex h-8 items-center border px-2 md:h-8 ${
+                className={`inline-flex h-7 items-center rounded-full border px-2 ${
                   showAnalyzer
-                    ? "border-emerald-500/70 text-emerald-500"
-                    : "border-border/70 text-muted-foreground hover:text-foreground"
+                    ? "border-emerald-500/70 bg-emerald-500/10 text-emerald-500"
+                    : "border-border/70 bg-background/72 text-muted-foreground hover:text-foreground"
                 }`}
               >
                 Spectrum
@@ -261,7 +266,7 @@ export function MusicVisualizerPlayer() {
                 triedTracksRef.current.clear();
                 setSelected(event.target.value);
               }}
-              className="h-9 w-full border border-border/70 bg-transparent px-2 text-xs text-foreground md:text-sm"
+              className="h-8 w-full rounded-lg border border-border/70 bg-background/72 px-2 text-xs text-foreground"
               disabled={tracks.length === 0}
             >
               {tracks.length === 0 ? (
@@ -282,7 +287,7 @@ export function MusicVisualizerPlayer() {
 
       <audio
         ref={audioRef}
-        className={collapsed ? "sr-only" : "mt-2 w-full md:mt-3"}
+        className={collapsed ? "sr-only" : "mt-1.5 w-full"}
         controls={!collapsed}
         preload="metadata"
         onPlay={resumeAudio}

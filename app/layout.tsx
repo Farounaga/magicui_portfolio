@@ -8,6 +8,7 @@ import { ScrollProgress } from "@/components/scroll-progress"
 import { AudioVisualizerProvider } from "@/components/audio-visualizer-context";
 import { MusicVisualizerPlayer } from "@/components/music-visualizer-player";
 import { DeferredVisualEffects } from "@/components/deferred-visual-effects";
+import { FloatingTimer } from "@/components/floating-timer";
 
 const fontSans = Geist({
   variable: "--font-sans",
@@ -48,6 +49,7 @@ export default function RootLayout({
               {children}
               <Footer />
             </div>
+            <FloatingTimer />
             <MusicVisualizerPlayer />
           </AudioVisualizerProvider>
         </ThemeProvider>

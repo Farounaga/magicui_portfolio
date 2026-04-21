@@ -16,7 +16,7 @@ function ReadableSection({ id, children }: { id: string; children: ReactNode }) 
     <section id={id} className="relative">
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/78 via-background/64 to-background/76 backdrop-blur-[1.4px]"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/34 via-background/22 to-background/30 backdrop-blur-[0.5px] dark:from-background/72 dark:via-background/58 dark:to-background/70"
       />
       <div className="relative z-10">{children}</div>
     </section>
