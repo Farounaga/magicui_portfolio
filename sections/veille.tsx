@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
 import { ArrowUpRight, RefreshCcw } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type FeedItem = {
   id: string;
@@ -91,14 +92,20 @@ export function Veille() {
             <RevealText text="Flux RSS en direct sur l'actualité IT, les technologies et la cybersécurité." />
           </p>
 
-          <div className="flex flex-wrap items-center gap-6 pt-3 text-xs uppercase tracking-[0.16em]">
-            <div className="flex flex-wrap gap-4">
+          <div className="relative z-10 flex flex-wrap items-center gap-4 pt-3 text-xs uppercase tracking-[0.14em]">
+            <div className="flex flex-wrap gap-2">
               {TOPICS.map((item) => (
                 <button
                   key={item.key}
                   type="button"
                   onClick={() => setTopic(item.key)}
-                  className={topic === item.key ? "text-emerald-400" : "text-muted-foreground hover:text-foreground"}
+                  aria-pressed={topic === item.key}
+                  className={cn(
+                    "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
+                    topic === item.key
+                      ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
+                      : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                  )}
                 >
                   {item.label}
                 </button>
@@ -113,6 +120,8 @@ export function Veille() {
               <RefreshCcw className={isLoading ? "h-3.5 w-3.5 animate-spin" : "h-3.5 w-3.5"} />
               Actualiser
             </button>
+
+            <p className="text-muted-foreground">Articles: {visibleItems.length}</p>
 
             {updatedAt ? (
               <p className="text-muted-foreground">

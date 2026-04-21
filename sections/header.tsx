@@ -36,12 +36,12 @@ export function Header() {
   return (
     <header className="fixed left-0 top-0 z-50 flex w-full justify-center px-3 text-foreground md:px-10">
       <div className="container relative border-b border-border/50 bg-background/80 backdrop-blur-sm">
-        <div className="flex h-16 items-center justify-between gap-2 md:gap-4">
+        <div className="flex h-20 items-center justify-between gap-2 md:h-22 md:gap-5">
           <Link className="inline-flex items-center gap-1" href="/">
             <Logo />
           </Link>
 
-          <nav className="hidden items-center gap-5 text-xs uppercase tracking-[0.14em] text-muted-foreground lg:flex">
+          <nav className="hidden items-center gap-7 text-sm uppercase tracking-[0.12em] text-muted-foreground lg:flex">
             {NAV_LINKS.map((item) => (
               <a key={item.id} href={item.href} className="hover:text-foreground">
                 {item.label}
@@ -63,19 +63,19 @@ export function Header() {
               <span className="relative inline-flex size-full rounded-full bg-emerald-300" />
             </div>
 
-            <div className="hidden text-xs font-medium text-muted-foreground sm:block">
+            <div className="hidden text-sm font-medium text-muted-foreground sm:block">
               Disponible pour des projets
             </div>
 
             <button
               type="button"
               onClick={() => setMenuOpen((prev) => !prev)}
-              className="inline-flex items-center justify-center border border-border/60 p-1.5 text-muted-foreground hover:text-foreground lg:hidden"
+              className="inline-flex items-center justify-center border border-border/60 p-2 text-muted-foreground hover:text-foreground lg:hidden"
               aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
               aria-expanded={menuOpen}
               aria-controls="mobile-main-menu"
             >
-              {menuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
             <ModeToggle />

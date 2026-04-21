@@ -8,11 +8,16 @@ import { RevealText } from "@/components/effects/reveal-text";
 const EMAIL = "7h16ciolq@mozmail.com";
 
 export function Contact() {
+  const [mounted, setMounted] = React.useState(false);
   const [name, setName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [subject, setSubject] = React.useState("");
   const [message, setMessage] = React.useState("");
   const [status, setStatus] = React.useState("");
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -32,6 +37,23 @@ export function Contact() {
 
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(finalSubject)}&body=${encodeURIComponent(body)}`;
     setStatus("Votre client de messagerie a été ouvert. Vous pouvez envoyer votre message.");
+  }
+
+  if (!mounted) {
+    return (
+      <section id="contact" className="px-6 py-20 md:px-10 lg:px-14">
+        <div className="mx-auto max-w-6xl space-y-12">
+          <header className="space-y-4 border-t border-border/60 pt-8">
+            <h2 className="text-4xl font-bold uppercase tracking-tight md:text-6xl">
+              <HeadingWaveText>Contact</HeadingWaveText>
+            </h2>
+            <p className="max-w-3xl text-foreground/85 leading-relaxed">
+              <RevealText text="Un projet, une alternance ou une collaboration : contactez-moi directement." />
+            </p>
+          </header>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -73,6 +95,10 @@ export function Contact() {
                 onChange={(event) => setEmail(event.target.value)}
                 className="h-11 w-full border-b border-border bg-transparent px-0 text-base text-foreground outline-none focus:border-emerald-400"
                 placeholder="votre.adresse@email.com"
+                autoComplete="off"
+                data-1p-ignore="true"
+                data-lpignore="true"
+                data-bwignore="true"
               />
             </label>
           </div>

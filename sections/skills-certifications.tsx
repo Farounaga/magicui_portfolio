@@ -6,6 +6,7 @@ import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
 import { AnimatedTestimonials } from "@/components/effects/animated-testimonials";
 import { MarqueeContainer } from "@/components/marquee-container";
+import { cn } from "@/lib/utils";
 import {
   Trophy,
   Code2,
@@ -68,6 +69,8 @@ const GROUP_LABELS: Record<SkillGroupKey, string> = {
   frontend: "Compétences frontend",
   langues: "Langues",
 };
+
+const GROUP_ORDER: SkillGroupKey[] = ["backend", "frontend", "langues"];
 
 const STACK_MARQUEE: Array<{ label: string; icon: LucideIcon }> = [
   { label: "Git", icon: GitBranch },
@@ -169,13 +172,20 @@ export function SkillsCertifications() {
             </div>
           </MarqueeContainer>
 
-          <div className="flex flex-wrap gap-x-8 gap-y-3 border-b border-border/50 pb-3 text-sm uppercase tracking-[0.18em]">
-            {(Object.keys(SKILL_GROUPS) as SkillGroupKey[]).map((group) => (
+          <div className="relative z-20 isolate flex flex-wrap gap-2 border-b border-border/50 pb-3 text-xs uppercase tracking-[0.14em] md:text-sm md:tracking-[0.16em]">
+            {GROUP_ORDER.map((group) => (
               <button
                 key={group}
                 type="button"
                 onClick={() => setActiveGroup(group)}
-                className={activeGroup === group ? "text-emerald-400" : "text-muted-foreground hover:text-foreground"}
+                onPointerDown={() => setActiveGroup(group)}
+                aria-pressed={activeGroup === group}
+                className={cn(
+                  "relative z-20 pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
+                  activeGroup === group
+                    ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
+                    : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                )}
               >
                 {GROUP_LABELS[group]}
               </button>

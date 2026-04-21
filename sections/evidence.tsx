@@ -71,12 +71,6 @@ const EVIDENCE_GROUPS: EvidenceGroup[] = [
         links: [{ label: "TP cybersécurité - analyse mail entreprise (PDF)", href: "/tp%20cybersecurite%20analyse%20de%20mail%20d%27entreprise.pdf" }],
         imageFolder: "cyber-lab",
       },
-      {
-        id: "support-scenarios",
-        title: "Mises en situation de support",
-        shortText: "Cette section illustre mon activité de support opérationnel chez SYADEM.",
-        imageFolder: "support-scenarios",
-      },
     ],
   },
 ];
