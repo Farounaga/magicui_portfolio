@@ -9,8 +9,10 @@ import { cn } from "@/lib/utils";
 
 type FeedItem = {
   id: string;
+  sourceId: string;
   source: string;
   topic: "tech" | "cyber";
+  language: "en" | "fr" | "ru";
   title: string;
   link: string;
   description: string;
@@ -19,18 +21,27 @@ type FeedItem = {
 
 type RssPayload = {
   updatedAt: string;
+  sources?: Array<{
+    id: string;
+    label: string;
+    topic: "tech" | "cyber";
+    language: "en" | "fr" | "ru";
+  }>;
   items: FeedItem[];
 };
 
-const TOPICS: Array<{ key: "all" | "tech" | "cyber"; label: string }> = [
-  { key: "all", label: "Tous" },
-  { key: "tech", label: "IT / Tech" },
-  { key: "cyber", label: "Cybersécurité" },
+const LANGUAGES: Array<{ key: "all" | "fr" | "ru" | "en"; label: string }> = [
+  { key: "all", label: "Toutes langues" },
+  { key: "fr", label: "FR" },
+  { key: "ru", label: "RU" },
+  { key: "en", label: "EN" },
 ];
 
 export function Veille() {
   const [items, setItems] = React.useState<FeedItem[]>([]);
-  const [topic, setTopic] = React.useState<"all" | "tech" | "cyber">("all");
+  const [language, setLanguage] = React.useState<"all" | "fr" | "ru" | "en">("all");
+  const [sources, setSources] = React.useState<Array<{ id: string; label: string }>>([]);
+  const [sourceId, setSourceId] = React.useState<"all" | string>("all");
   const [updatedAt, setUpdatedAt] = React.useState<string>("");
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState("");
@@ -40,7 +51,15 @@ export function Veille() {
     setError("");
 
     try {
-      const response = await fetch("/api/rss", { cache: "no-store" });
+      const params = new URLSearchParams();
+      if (language !== "all") {
+        params.set("lang", language);
+      }
+      if (sourceId !== "all") {
+        params.set("source", sourceId);
+      }
+      const endpoint = params.size > 0 ? `/api/rss?${params.toString()}` : "/api/rss";
+      const response = await fetch(endpoint, { cache: "no-store" });
       if (!response.ok) {
         throw new Error("rss_error");
       }
@@ -48,25 +67,29 @@ export function Veille() {
       const data = (await response.json()) as RssPayload;
       setItems(data.items ?? []);
       setUpdatedAt(data.updatedAt ?? "");
+      const nextSources = (data.sources ?? []).map((source) => ({ id: source.id, label: source.label }));
+      setSources(nextSources);
+      if (sourceId !== "all" && nextSources.every((source) => source.id !== sourceId)) {
+        setSourceId("all");
+      }
     } catch {
       setError("Impossible de charger le flux RSS pour le moment.");
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [language, sourceId]);
 
   React.useEffect(() => {
     void loadFeed();
   }, [loadFeed]);
 
   const visibleItems = React.useMemo(() => {
-    const scoped = topic === "all" ? items : items.filter((item) => item.topic === topic);
-    return [...scoped].sort((a, b) => {
+    return [...items].sort((a, b) => {
       const aTime = Date.parse(a.publishedAt || "");
       const bTime = Date.parse(b.publishedAt || "");
       return (Number.isNaN(bTime) ? 0 : bTime) - (Number.isNaN(aTime) ? 0 : aTime);
     });
-  }, [items, topic]);
+  }, [items]);
 
   const groupedBySource = React.useMemo(() => {
     const map = new Map<string, FeedItem[]>();
@@ -94,20 +117,52 @@ export function Veille() {
 
           <div className="relative z-10 flex flex-wrap items-center gap-4 pt-3 text-xs uppercase tracking-[0.14em]">
             <div className="flex flex-wrap gap-2">
-              {TOPICS.map((item) => (
+              {LANGUAGES.map((item) => (
                 <button
                   key={item.key}
                   type="button"
-                  onClick={() => setTopic(item.key)}
-                  aria-pressed={topic === item.key}
+                  onClick={() => setLanguage(item.key)}
+                  aria-pressed={language === item.key}
                   className={cn(
                     "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
-                    topic === item.key
+                    language === item.key
                       ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
                       : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
                   )}
                 >
                   {item.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSourceId("all")}
+                aria-pressed={sourceId === "all"}
+                className={cn(
+                  "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
+                  sourceId === "all"
+                    ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
+                    : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                )}
+              >
+                Toutes sources
+              </button>
+              {sources.map((source) => (
+                <button
+                  key={source.id}
+                  type="button"
+                  onClick={() => setSourceId(source.id)}
+                  aria-pressed={sourceId === source.id}
+                  className={cn(
+                    "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
+                    sourceId === source.id
+                      ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
+                      : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                  )}
+                >
+                  {source.label}
                 </button>
               ))}
             </div>
