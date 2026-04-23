@@ -145,6 +145,23 @@ export function Realisations() {
               `clustering_metrics.json`) pour auditer le comportement du pipeline.
             </p>
 
+            <figure className="w-full max-w-[860px] space-y-2 border border-border/50 p-3">
+              <div className="relative overflow-hidden">
+                <video
+                  className="h-auto w-full"
+                  src="/rb_tkts.mp4"
+                  controls
+                  playsInline
+                  preload="metadata"
+                >
+                  Votre navigateur ne supporte pas la lecture vidéo.
+                </video>
+              </div>
+              <figcaption className="text-xs uppercase tracking-[0.12em] text-muted-foreground">
+                Démonstration du pipeline RB_TKTS
+              </figcaption>
+            </figure>
+
             <motion.ul
               initial="hidden"
               whileInView="visible"
