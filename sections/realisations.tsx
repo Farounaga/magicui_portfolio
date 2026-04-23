@@ -203,6 +203,24 @@ export function Realisations() {
           <p className="text-xs uppercase tracking-[0.25em] text-muted-foreground">Esportapp - API</p>
           <div className="space-y-6">
             <h3 className="text-3xl font-semibold tracking-tight">Backend API FastAPI pour plateforme e-sport</h3>
+            <figure className="mx-auto w-full max-w-[220px] space-y-2 border border-border/50 p-2 md:float-right md:mb-4 md:ml-6 md:mr-0 md:mt-1 md:mx-0">
+              <div className="relative overflow-hidden">
+                <video
+                  className="h-auto w-full"
+                  src="/apimeme.mp4"
+                  autoPlay
+                  playsInline
+                  loop
+                  muted
+                  preload="metadata"
+                >
+                  Votre navigateur ne supporte pas la lecture vidéo.
+                </video>
+              </div>
+              <figcaption className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground">
+                Illustration vidéo du projet Esportapp API
+              </figcaption>
+            </figure>
             <p className="text-foreground/85 leading-relaxed">
               Sur ce projet, je me suis concentré uniquement sur la partie API : architecture des routes,
               auth JWT, modèles de données et logique de matching. L'objectif était de fournir une base backend
@@ -229,7 +247,7 @@ export function Realisations() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.45 }}
               transition={{ staggerChildren: 0.06 }}
-              className="space-y-2 font-mono text-sm"
+              className="clear-both space-y-2 font-mono text-sm"
             >
               {API_SCOPE.map((item, index) => (
                 <motion.li
