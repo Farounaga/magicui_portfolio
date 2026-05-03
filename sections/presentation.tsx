@@ -6,6 +6,7 @@ import { RevealText } from "@/components/effects/reveal-text";
 import { DancingLetters } from "@/components/effects/dancing-letters";
 import { ArrowUpRight, Code2, Network, ShieldCheck, Database } from "lucide-react";
 import Image from "next/image";
+import { AlternanceFlow, EcosystemMap, StatsInfographic } from "@/components/infographics";
 
 const SYADEM_TOOLS = [
   "SIV (systèmes d'information vaccinale)",
@@ -16,10 +17,10 @@ const SYADEM_TOOLS = [
 ];
 
 const SYADEM_STATS = [
-  "3M+ carnets créés",
-  "9M+ actes vaccinaux enregistrés",
-  "40 000+ utilisateurs professionnels",
-  "200+ centres équipés",
+  { value: "3M+", label: "carnets créés" },
+  { value: "9M+", label: "actes vaccinaux enregistrés" },
+  { value: "40K+", label: "utilisateurs professionnels" },
+  { value: "200+", label: "centres équipés" },
 ];
 
 const TECHNO_PICTOS = ["FastAPI", "Ruby", "MySQL", "Docker", "Git", "React", "Python", "Linux"];
@@ -62,6 +63,8 @@ export function Presentation() {
               d'outils métier, logique applicative, qualité logicielle et communication technique avec les
               utilisateurs.
             </p>
+
+            <AlternanceFlow />
 
             <div className="grid gap-4 pt-2 md:grid-cols-[1.2fr_0.8fr]">
               <div className="grid gap-3 sm:grid-cols-2">
@@ -152,6 +155,8 @@ export function Presentation() {
               et alignés sur les recommandations officielles.
             </p>
 
+            <EcosystemMap />
+
             <div className="grid gap-4 md:grid-cols-[0.8fr_1.2fr]">
               <figure className="space-y-2 border border-border/50 p-3">
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -203,11 +208,7 @@ export function Presentation() {
               ))}
             </motion.ul>
 
-            <div className="flex flex-wrap gap-x-8 gap-y-2 border-t border-border/60 pt-5 text-sm uppercase tracking-[0.15em] text-muted-foreground">
-              {SYADEM_STATS.map((stat) => (
-                <span key={stat}>{stat}</span>
-              ))}
-            </div>
+            <StatsInfographic stats={SYADEM_STATS} />
 
             <a
               href="https://www.syadem.com/"

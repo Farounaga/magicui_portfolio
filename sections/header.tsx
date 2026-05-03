@@ -86,7 +86,7 @@ export function Header() {
               <a
                 key={item.id}
                 href={item.href}
-                className="whitespace-nowrap rounded-full border border-transparent px-2.5 py-1.5 transition-colors hover:border-border/65 hover:bg-muted/60 hover:text-foreground"
+                className="filter-pill filter-pill-muted min-h-8 whitespace-nowrap px-3 py-1.5 text-[0.72rem] normal-case tracking-[0.06em]"
               >
                 {item.label}
               </a>
@@ -95,7 +95,7 @@ export function Header() {
               href={EXTERNAL_LINKS[0].href}
               target="_blank"
               rel="noopener noreferrer"
-              className="whitespace-nowrap rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1.5 text-emerald-500 transition-colors hover:bg-emerald-500/16 hover:text-emerald-400"
+              className="filter-pill filter-pill-active min-h-8 whitespace-nowrap px-3 py-1.5 text-[0.72rem] normal-case tracking-[0.06em]"
             >
               {EXTERNAL_LINKS[0].label}
             </a>
@@ -164,7 +164,7 @@ export function Header() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setMenuOpen(false)}
-                  className="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3 py-1.5 text-emerald-500 hover:text-emerald-400"
+                  className="filter-pill filter-pill-active"
                 >
                   {item.label}
                 </a>

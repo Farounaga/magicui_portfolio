@@ -7,6 +7,7 @@ import { RevealText } from "@/components/effects/reveal-text";
 import { AnimatedTestimonials } from "@/components/effects/animated-testimonials";
 import { MarqueeContainer } from "@/components/marquee-container";
 import { cn } from "@/lib/utils";
+import { SkillSynthesis } from "@/components/infographics";
 import {
   Trophy,
   Code2,
@@ -186,6 +187,8 @@ export function SkillsCertifications() {
             </div>
           </MarqueeContainer>
 
+          <SkillSynthesis />
+
           <div className="relative z-20 isolate flex flex-wrap gap-2 border-b border-border/50 pb-3 text-xs uppercase tracking-[0.14em] md:text-sm md:tracking-[0.16em]">
             {GROUP_ORDER.map((group) => (
               <button
@@ -195,10 +198,8 @@ export function SkillsCertifications() {
                 onPointerDown={() => setActiveGroup(group)}
                 aria-pressed={activeGroup === group}
                 className={cn(
-                  "relative z-20 pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
-                  activeGroup === group
-                    ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
-                    : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                  "filter-pill relative z-20",
+                  activeGroup === group ? "filter-pill-active text-emerald-300" : "filter-pill-muted",
                 )}
               >
                 {GROUP_LABELS[group]}

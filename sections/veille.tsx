@@ -4,8 +4,9 @@ import * as React from "react";
 import { motion } from "motion/react";
 import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
-import { ArrowUpRight, RefreshCcw } from "lucide-react";
+import { ArrowUpRight, FileText, Globe2, Languages, RefreshCcw, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { VeilleDashboard, VeilleFlow } from "@/components/infographics";
 
 type FeedItem = {
   id: string;
@@ -104,6 +105,38 @@ export function Veille() {
       .map(([source, sourceItems]) => ({ source, items: sourceItems }));
   }, [visibleItems]);
 
+  const dashboardMetrics = React.useMemo(() => {
+    const cyberCount = visibleItems.filter((item) => item.topic === "cyber").length;
+    const techCount = visibleItems.length - cyberCount;
+
+    return [
+      {
+        label: "Articles surveillés",
+        value: String(visibleItems.length),
+        detail: "Flux triés du plus récent au plus ancien.",
+        icon: FileText,
+      },
+      {
+        label: "Sources actives",
+        value: String(sources.length || groupedBySource.length),
+        detail: "Sources RSS filtrables par origine.",
+        icon: Globe2,
+      },
+      {
+        label: "Langues suivies",
+        value: "FR / RU / EN",
+        detail: language === "all" ? "Toutes les langues affichées." : `Filtre actif : ${language.toUpperCase()}.`,
+        icon: Languages,
+      },
+      {
+        label: "Tech / Cyber",
+        value: `${techCount}/${cyberCount}`,
+        detail: "Répartition des sujets dans le flux chargé.",
+        icon: ShieldCheck,
+      },
+    ];
+  }, [groupedBySource.length, language, sources.length, visibleItems]);
+
   return (
     <section id="veille-technologique" className="px-6 py-20 md:px-10 lg:px-14">
       <div className="mx-auto max-w-6xl space-y-12">
@@ -124,10 +157,8 @@ export function Veille() {
                   onClick={() => setLanguage(item.key)}
                   aria-pressed={language === item.key}
                   className={cn(
-                    "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
-                    language === item.key
-                      ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
-                      : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                    "filter-pill",
+                    language === item.key ? "filter-pill-active text-emerald-300" : "filter-pill-muted",
                   )}
                 >
                   {item.label}
@@ -141,10 +172,8 @@ export function Veille() {
                 onClick={() => setSourceId("all")}
                 aria-pressed={sourceId === "all"}
                 className={cn(
-                  "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
-                  sourceId === "all"
-                    ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
-                    : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                  "filter-pill",
+                  sourceId === "all" ? "filter-pill-active text-emerald-300" : "filter-pill-muted",
                 )}
               >
                 Toutes sources
@@ -156,10 +185,8 @@ export function Veille() {
                   onClick={() => setSourceId(source.id)}
                   aria-pressed={sourceId === source.id}
                   className={cn(
-                    "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
-                    sourceId === source.id
-                      ? "border-emerald-400/70 bg-emerald-400/10 text-emerald-400"
-                      : "border-border/60 text-muted-foreground hover:border-foreground/40 hover:text-foreground",
+                    "filter-pill",
+                    sourceId === source.id ? "filter-pill-active text-emerald-300" : "filter-pill-muted",
                   )}
                 >
                   {source.label}
@@ -185,6 +212,11 @@ export function Veille() {
             ) : null}
           </div>
         </header>
+
+        <div className="space-y-4">
+          <VeilleDashboard metrics={dashboardMetrics} />
+          <VeilleFlow />
+        </div>
 
         {error ? <p className="text-sm text-red-400">{error}</p> : null}
 

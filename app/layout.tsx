@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Header } from "@/sections/header";
 import { Footer } from "@/sections/footer";
@@ -10,15 +11,8 @@ import { MusicVisualizerPlayer } from "@/components/music-visualizer-player";
 import { DeferredVisualEffects } from "@/components/deferred-visual-effects";
 import { FloatingTimer } from "@/components/floating-timer";
 
-const fontSans = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const geistMono = GeistMono;
+const geistSans = GeistSans;
 
 export const metadata: Metadata = {
   title: "Portfolio - Vladimir Spirine",
@@ -31,14 +25,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" suppressHydrationWarning>
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable}`}
+    >
       <body
-        className={`${fontSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.className} antialiased`}
       >
         <ScrollProgress color="bg-green-300" />
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

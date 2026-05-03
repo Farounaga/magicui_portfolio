@@ -1,6 +1,7 @@
 import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
 import { EvidenceImageGallery } from "@/components/evidence-image-gallery";
+import { EvidenceProcess } from "@/components/infographics";
 import { ArrowUpRight } from "lucide-react";
 import fs from "node:fs";
 import path from "node:path";
@@ -132,6 +133,13 @@ export function Evidence() {
 
                   <div className="space-y-4 pb-5 text-foreground/85">
                     <p className="leading-relaxed">{item.shortText}</p>
+
+                    <EvidenceProcess
+                      context={group.label}
+                      action={item.shortText}
+                      result={item.links?.length ? "Document ou lien associé disponible." : "Activité documentée par capture."}
+                      trace={item.images?.length ? `${item.images.length} capture(s) intégrée(s).` : "Trace à compléter dans le dossier preuves."}
+                    />
 
                     {item.referentiel ? (
                       <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">

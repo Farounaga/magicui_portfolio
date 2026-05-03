@@ -43,17 +43,15 @@ export function AnimatedTestimonials({
 
   return (
     <div className="space-y-6">
-      <div className="relative z-10 flex flex-wrap items-center gap-2 text-[11px] uppercase tracking-[0.12em] text-muted-foreground">
+      <div className="relative z-10 flex flex-wrap items-center gap-2">
         {items.map((item, index) => (
           <button
             key={item.id}
             type="button"
             aria-pressed={index === active}
             className={cn(
-              "pointer-events-auto rounded-full border px-3 py-1.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70",
-              index === active
-                ? "border-emerald-400/70 bg-emerald-400/10 text-foreground"
-                : "border-border/60 hover:border-foreground/40 hover:text-foreground",
+              "filter-pill normal-case",
+              index === active ? "filter-pill-active" : "filter-pill-muted",
             )}
             onClick={() => setActive(index)}
           >

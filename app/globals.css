@@ -35,9 +35,9 @@
   --sidebar-accent-foreground: hsl(223.8136 0.0000% 9.0527%);
   --sidebar-border: hsl(223.8136 0.0001% 89.8161%);
   --sidebar-ring: hsl(223.8136 0.0000% 63.0163%);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.625rem;
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
@@ -84,9 +84,9 @@
   --sidebar-accent-foreground: hsl(223.8136 0.0004% 98.0256%);
   --sidebar-border: hsl(223.8136 0.0000% 15.5096%);
   --sidebar-ring: hsl(223.8136 0.0000% 32.1993%);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   --radius: 0.625rem;
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
@@ -227,5 +227,20 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer components {
+  .filter-pill {
+    @apply pointer-events-auto inline-flex min-h-9 items-center justify-center rounded-full border border-border/75 bg-background/88 px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] text-foreground/82 shadow-[0_8px_26px_-20px_rgba(0,0,0,0.72)] transition-colors hover:border-emerald-400/65 hover:bg-emerald-400/8 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70;
+  }
+
+  .filter-pill-active {
+    @apply border-emerald-400/85 bg-emerald-400/16 text-foreground shadow-[0_10px_34px_-18px_rgba(16,185,129,0.88)];
+  }
+
+  .filter-pill-muted {
+    @apply text-muted-foreground hover:text-foreground;
   }
 }

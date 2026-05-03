@@ -10,6 +10,7 @@ import { EarthIcon } from "@/components/ui/earth";
 import { AirplaneIcon } from "@/components/ui/airplane";
 import { HeadingWaveText } from "@/components/effects/heading-wave-text";
 import { RevealText } from "@/components/effects/reveal-text";
+import { EXPERIENCE_WORKFLOW, HybridProfileGraphic, PipelineGraphic } from "@/components/infographics";
 
 const EXPERIENCE_HISTORY = [
   {
@@ -143,6 +144,10 @@ export function Experience() {
                 <div className="space-y-3 pl-1 text-foreground/85">
                   <p className="leading-relaxed">{experience.description}</p>
 
+                  {"support" in experience && experience.support ? (
+                    <PipelineGraphic title="Workflow opérationnel" steps={EXPERIENCE_WORKFLOW} />
+                  ) : null}
+
                   {"support" in experience && experience.support && (
                     <p className="leading-relaxed">
                       <span className="mr-2 text-xs uppercase tracking-[0.16em] text-emerald-400">Support</span>
@@ -163,6 +168,8 @@ export function Experience() {
                       {experience.companyText}
                     </p>
                   )}
+
+                  {"development" in experience && experience.development ? <HybridProfileGraphic /> : null}
                 </div>
               </motion.article>
             ))}
