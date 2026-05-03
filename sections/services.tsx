@@ -3,33 +3,36 @@ import { Parallax, ParallaxItem, PrallaxContainer } from "@/components/systaliko
 import Image from "next/image";
 
 export function Services () {
+    const headingClassName =
+        "cursor-pointer font-bold uppercase tracking-tight text-white mix-blend-difference transition-opacity hover:opacity-75";
+
     return (
         <section>
             <Parallax className="min-h-[72rem] px-4 py-8 sm:min-h-[88rem] sm:px-6 md:min-h-[100rem]">
                 <div className='sticky top-0 z-10 flex h-screen w-full flex-col items-center justify-center space-y-3 px-2 text-center sm:space-y-4'>
                     <h1 
                     onClick={() => document.getElementById("presentation")?.scrollIntoView({ behavior: "smooth" })}
-                    className="cursor-pointer text-[clamp(1.8rem,8vw,4.5rem)] font-bold uppercase tracking-tight text-foreground/90 hover:text-foreground">
+                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Présentation
                     </h1>
                     <h1
                     onClick={() => document.getElementById("parcours-etudes")?.scrollIntoView({ behavior: "smooth" })}
-                    className="cursor-pointer text-[clamp(1.8rem,8vw,4.5rem)] font-bold uppercase tracking-tight text-foreground/90 hover:text-foreground">
+                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Parcours & Compétences
                     </h1>
                     <h1
                     onClick={() => document.getElementById("realisations")?.scrollIntoView({ behavior: "smooth" })}
-                    className="cursor-pointer text-[clamp(1.8rem,8vw,4.5rem)] font-bold uppercase tracking-tight text-foreground/90 hover:text-foreground">
+                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Réalisations
                     </h1>
                     <h1
                     onClick={() => document.getElementById("preuves-illustrations")?.scrollIntoView({ behavior: "smooth" })}
-                    className="cursor-pointer text-[clamp(1.5rem,6.8vw,3.8rem)] font-bold uppercase tracking-tight text-foreground/90 hover:text-foreground">
+                    className={`${headingClassName} text-[clamp(1.5rem,6.8vw,3.8rem)]`}>
                         Preuves & Illustrations
                     </h1>
                     <h1
                     onClick={() => document.getElementById("veille-technologique")?.scrollIntoView({ behavior: "smooth" })}
-                    className="cursor-pointer text-[clamp(1.8rem,8vw,4.5rem)] font-bold uppercase tracking-tight text-foreground/90 hover:text-foreground">
+                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Veille technologique
                     </h1>
                 </div>
