@@ -7,8 +7,8 @@ export function Services () {
         "cursor-pointer font-bold uppercase tracking-tight text-white mix-blend-difference transition-opacity hover:opacity-75";
 
     return (
-        <section>
-            <Parallax className="min-h-[72rem] px-4 py-8 sm:min-h-[88rem] sm:px-6 md:min-h-[100rem]">
+        <section className="bg-background">
+            <Parallax className="isolate min-h-[72rem] bg-background px-4 py-8 sm:min-h-[88rem] sm:px-6 md:min-h-[100rem]">
                 <div className='sticky top-0 z-10 flex h-screen w-full flex-col items-center justify-center space-y-3 px-2 text-center sm:space-y-4'>
                     <h1 
                     onClick={() => document.getElementById("presentation")?.scrollIntoView({ behavior: "smooth" })}
@@ -37,7 +37,7 @@ export function Services () {
                     </h1>
                 </div>
 
-                <PrallaxContainer className="flex w-full flex-wrap justify-center gap-3 sm:gap-4">
+                <PrallaxContainer className="relative z-0 flex w-full flex-wrap justify-center gap-3 sm:gap-4">
                     <ParallaxItem
                         className="relative h-[26vh] min-h-[170px] basis-full sm:h-[32vh] sm:basis-[calc(50%-0.5rem)] lg:basis-[calc(33.333%-0.75rem)]"
                         start={0}
