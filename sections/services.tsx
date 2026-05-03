@@ -1,40 +1,140 @@
 'use client'
+import * as React from "react";
 import { Parallax, ParallaxItem, PrallaxContainer } from "@/components/systaliko-ui/blocks/parallax";
 import Image from "next/image";
 
+type ClipRect = {
+    top: number;
+    right: number;
+    bottom: number;
+    left: number;
+};
+
+function InvertingHeading({
+    children,
+    className,
+    targetId,
+}: {
+    children: string;
+    className: string;
+    targetId: string;
+}) {
+    const ref = React.useRef<HTMLButtonElement>(null);
+    const [clips, setClips] = React.useState<ClipRect[]>([]);
+
+    React.useEffect(() => {
+        let frame = 0;
+
+        const updateClips = () => {
+            const heading = ref.current;
+            if (!heading) {
+                return;
+            }
+
+            const headingRect = heading.getBoundingClientRect();
+            const imageRects = Array.from(document.querySelectorAll<HTMLImageElement>("[data-invert-backdrop='true']"))
+                .map((element) => {
+                    const rect = element.getBoundingClientRect();
+                    const naturalWidth = element.naturalWidth || rect.width;
+                    const naturalHeight = element.naturalHeight || rect.height;
+                    const imageRatio = naturalWidth / naturalHeight;
+                    const boxRatio = rect.width / rect.height;
+
+                    if (boxRatio > imageRatio) {
+                        const visibleWidth = rect.height * imageRatio;
+                        const inset = (rect.width - visibleWidth) / 2;
+                        return new DOMRect(rect.left + inset, rect.top, visibleWidth, rect.height);
+                    }
+
+                    const visibleHeight = rect.width / imageRatio;
+                    const inset = (rect.height - visibleHeight) / 2;
+                    return new DOMRect(rect.left, rect.top + inset, rect.width, visibleHeight);
+                });
+
+            const nextClips = imageRects
+                .map((imageRect) => {
+                    const left = Math.max(imageRect.left, headingRect.left);
+                    const right = Math.min(imageRect.right, headingRect.right);
+                    const top = Math.max(imageRect.top, headingRect.top);
+                    const bottom = Math.min(imageRect.bottom, headingRect.bottom);
+
+                    if (right <= left || bottom <= top) {
+                        return null;
+                    }
+
+                    return {
+                        top: top - headingRect.top,
+                        right: headingRect.right - right,
+                        bottom: headingRect.bottom - bottom,
+                        left: left - headingRect.left,
+                    };
+                })
+                .filter((clip): clip is ClipRect => Boolean(clip));
+
+            setClips(nextClips);
+        };
+
+        const tick = () => {
+            updateClips();
+            frame = window.requestAnimationFrame(tick);
+        };
+
+        frame = window.requestAnimationFrame(tick);
+        window.addEventListener("resize", updateClips);
+
+        return () => {
+            window.cancelAnimationFrame(frame);
+            window.removeEventListener("resize", updateClips);
+        };
+    }, []);
+
+    return (
+        <button
+            ref={ref}
+            type="button"
+            onClick={() => document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth" })}
+            className={`relative inline-block border-0 bg-transparent p-0 text-black dark:text-white ${className}`}
+        >
+            <span className="relative z-0">{children}</span>
+            {clips.map((clip, index) => (
+                <span
+                    key={`${children}-${index}-${clip.top}-${clip.left}`}
+                    aria-hidden
+                    className={`pointer-events-none absolute inset-0 z-10 text-white ${className}`}
+                    style={{
+                        clipPath: `inset(${clip.top}px ${clip.right}px ${clip.bottom}px ${clip.left}px)`,
+                    }}
+                >
+                    {children}
+                </span>
+            ))}
+        </button>
+    );
+}
+
 export function Services () {
     const headingClassName =
-        "cursor-pointer font-bold uppercase tracking-tight text-white mix-blend-difference transition-opacity hover:opacity-75";
+        "cursor-pointer font-bold uppercase tracking-tight";
 
     return (
         <section className="bg-background">
             <Parallax className="isolate min-h-[72rem] bg-background px-4 py-8 sm:min-h-[88rem] sm:px-6 md:min-h-[100rem]">
                 <div className='sticky top-0 z-10 flex h-screen w-full flex-col items-center justify-center space-y-3 px-2 text-center sm:space-y-4'>
-                    <h1 
-                    onClick={() => document.getElementById("presentation")?.scrollIntoView({ behavior: "smooth" })}
-                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
+                    <InvertingHeading targetId="presentation" className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Présentation
-                    </h1>
-                    <h1
-                    onClick={() => document.getElementById("parcours-etudes")?.scrollIntoView({ behavior: "smooth" })}
-                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
+                    </InvertingHeading>
+                    <InvertingHeading targetId="parcours-etudes" className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Parcours & Compétences
-                    </h1>
-                    <h1
-                    onClick={() => document.getElementById("realisations")?.scrollIntoView({ behavior: "smooth" })}
-                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
+                    </InvertingHeading>
+                    <InvertingHeading targetId="realisations" className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Réalisations
-                    </h1>
-                    <h1
-                    onClick={() => document.getElementById("preuves-illustrations")?.scrollIntoView({ behavior: "smooth" })}
-                    className={`${headingClassName} text-[clamp(1.5rem,6.8vw,3.8rem)]`}>
+                    </InvertingHeading>
+                    <InvertingHeading targetId="preuves-illustrations" className={`${headingClassName} text-[clamp(1.5rem,6.8vw,3.8rem)]`}>
                         Preuves & Illustrations
-                    </h1>
-                    <h1
-                    onClick={() => document.getElementById("veille-technologique")?.scrollIntoView({ behavior: "smooth" })}
-                    className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
+                    </InvertingHeading>
+                    <InvertingHeading targetId="veille-technologique" className={`${headingClassName} text-[clamp(1.8rem,8vw,4.5rem)]`}>
                         Veille technologique
-                    </h1>
+                    </InvertingHeading>
                 </div>
 
                 <PrallaxContainer className="relative z-0 flex w-full flex-wrap justify-center gap-3 sm:gap-4">
@@ -44,6 +144,7 @@ export function Services () {
                         end={-200}
                     >
                     <Image
+                        data-invert-backdrop="true"
                         fill 
                         className="object-contain"
                         sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
@@ -58,6 +159,7 @@ export function Services () {
                         end={-100}
                     >
                         <Image
+                            data-invert-backdrop="true"
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
@@ -72,6 +174,7 @@ export function Services () {
                         end={-100}
                     >
                         <Image
+                            data-invert-backdrop="true"
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
@@ -86,6 +189,7 @@ export function Services () {
                         end={-100}
                     >
                         <Image
+                            data-invert-backdrop="true"
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
@@ -100,6 +204,7 @@ export function Services () {
                         end={-200}
                     >
                         <Image
+                            data-invert-backdrop="true"
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
