@@ -5,14 +5,15 @@ import { SectionParticlesBackground } from "@/components/section-particles-backg
 import SplashCursor from "@/components/SplashCursor";
 import { CultDitheringOrnaments } from "@/components/cult-dithering-ornaments";
 
-const CURSOR_TRAIL_STORAGE_KEY = "vs_cursor_trail_enabled";
+const CURSOR_TRAIL_STORAGE_KEY = "vs_cursor_trail_enabled_v2";
 const CURSOR_TRAIL_EVENT = "vs-cursor-trail-toggle";
 
 export function DeferredVisualEffects() {
   const [ready, setReady] = React.useState(false);
   const [showSplashCursor, setShowSplashCursor] = React.useState(false);
+  const [showOrnaments, setShowOrnaments] = React.useState(false);
   const [canUseFinePointer, setCanUseFinePointer] = React.useState(false);
-  const [cursorTrailEnabled, setCursorTrailEnabled] = React.useState(true);
+  const [cursorTrailEnabled, setCursorTrailEnabled] = React.useState(false);
 
   React.useEffect(() => {
     let activated = false;
@@ -90,6 +91,22 @@ export function DeferredVisualEffects() {
     setShowSplashCursor(canUseFinePointer && cursorTrailEnabled);
   }, [canUseFinePointer, cursorTrailEnabled]);
 
+  React.useEffect(() => {
+    if (!ready || showOrnaments) {
+      return;
+    }
+
+    const activateOrnaments = () => {
+      if (window.scrollY > window.innerHeight * 0.45) {
+        setShowOrnaments(true);
+      }
+    };
+
+    activateOrnaments();
+    window.addEventListener("scroll", activateOrnaments, { passive: true });
+    return () => window.removeEventListener("scroll", activateOrnaments);
+  }, [ready, showOrnaments]);
+
   if (!ready) {
     return null;
   }
@@ -110,7 +127,7 @@ export function DeferredVisualEffects() {
         />
       ) : null}
       <SectionParticlesBackground />
-      <CultDitheringOrnaments />
+      {showOrnaments ? <CultDitheringOrnaments /> : null}
     </>
   );
 }

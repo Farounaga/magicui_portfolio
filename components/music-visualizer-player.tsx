@@ -26,6 +26,7 @@ export function MusicVisualizerPlayer() {
   const [isLoading, setIsLoading] = React.useState(true);
   const [playbackError, setPlaybackError] = React.useState("");
   const [mounted, setMounted] = React.useState(false);
+  const [shouldLoadAudio, setShouldLoadAudio] = React.useState(false);
 
   const jumpToNextTrack = React.useCallback(
     (failedSrc: string) => {
@@ -145,6 +146,12 @@ export function MusicVisualizerPlayer() {
     }
 
     setPlaybackError("");
+    if (!shouldLoadAudio && audio.paused) {
+      audio.removeAttribute("src");
+      audio.load();
+      return;
+    }
+
     const shouldResume = !audio.paused;
     audio.src = selected;
     audio.load();
@@ -152,7 +159,7 @@ export function MusicVisualizerPlayer() {
     if (shouldResume) {
       void audio.play().catch(() => undefined);
     }
-  }, [selected]);
+  }, [selected, shouldLoadAudio]);
 
   async function togglePlayback() {
     const audio = audioRef.current;
@@ -166,6 +173,11 @@ export function MusicVisualizerPlayer() {
 
     if (audio.paused) {
       try {
+        setShouldLoadAudio(true);
+        if (selected && audio.src !== selected) {
+          audio.src = selected;
+          audio.load();
+        }
         await audio.play();
       } catch {
         // blocked until user interaction
@@ -264,6 +276,7 @@ export function MusicVisualizerPlayer() {
               onChange={(event) => {
                 resumeAudio();
                 triedTracksRef.current.clear();
+                setShouldLoadAudio(false);
                 setSelected(event.target.value);
               }}
               className="h-8 w-full rounded-lg border border-border/70 bg-background/72 px-2 text-xs text-foreground"

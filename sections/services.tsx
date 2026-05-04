@@ -169,7 +169,7 @@ export function Services () {
                         fill 
                         className="object-contain"
                         sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
-                        src="/bigscreenmeme.jpg"
+                        src="/images/services/bigscreenmeme.webp"
                         alt="showcase"
                     />
                     </ParallaxItem>
@@ -184,7 +184,7 @@ export function Services () {
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
-                            src="https://i.pinimg.com/736x/4d/1e/d6/4d1ed63d68d090c93e5d1e5698b1cd65.jpg"
+                            src="/images/services/code-screen.webp"
                             alt="showcase"
                         />
                     </ParallaxItem>
@@ -199,7 +199,7 @@ export function Services () {
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
-                            src="https://i.pinimg.com/736x/62/9c/3d/629c3d0b08f4a5c1bd7edd83a32c452f.jpg"
+                            src="/images/services/debug-meme.webp"
                             alt="showcase"
                         />
                     </ParallaxItem>
@@ -214,7 +214,7 @@ export function Services () {
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
-                            src="https://images.unsplash.com/photo-1633194486274-8953df0d4064?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDF8fHxlbnwwfHx8fHw%3D"
+                            src="/images/services/blue-desk.webp"
                             alt="showcase"
                         />
                     </ParallaxItem>
@@ -229,7 +229,7 @@ export function Services () {
                             fill 
                             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                             className="object-contain"
-                            src="https://images.unsplash.com/photo-1547658718-1cdaa0852790?q=80&w=764&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                            src="/images/services/web-code.webp"
                             alt="showcase"
                         />
                     </ParallaxItem>

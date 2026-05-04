@@ -20,12 +20,12 @@ const EXTERNAL_LINKS = [
   { id: "campus", label: "Campus Ermitage", href: "https://campusermitage.fr/" },
 ] as const;
 
-const CURSOR_TRAIL_STORAGE_KEY = "vs_cursor_trail_enabled";
+const CURSOR_TRAIL_STORAGE_KEY = "vs_cursor_trail_enabled_v2";
 const CURSOR_TRAIL_EVENT = "vs-cursor-trail-toggle";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = React.useState(false);
-  const [cursorTrailEnabled, setCursorTrailEnabled] = React.useState(true);
+  const [cursorTrailEnabled, setCursorTrailEnabled] = React.useState(false);
 
   const toggleCursorTrail = React.useCallback(() => {
     const next = !cursorTrailEnabled;
