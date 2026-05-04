@@ -17,7 +17,7 @@ export async function GET() {
     const tracks: Track[] = files.map((file) => ({
       id: String(file.index),
       label: file.label,
-      src: `/music/${encodeURIComponent(file.name)}`,
+      src: `/api/music/stream/${file.index}`,
     }));
 
     return NextResponse.json({ tracks });

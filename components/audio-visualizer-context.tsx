@@ -16,7 +16,7 @@ type AudioEnergy = {
 type AudioVisualizerContextValue = {
   energy: AudioEnergy;
   registerAudioElement: (element: HTMLMediaElement | null) => (() => void) | void;
-  resumeAudio: () => void;
+  resumeAudio: () => Promise<void>;
   showCore: boolean;
   showAnalyzer: boolean;
   toggleCore: () => void;
@@ -57,7 +57,7 @@ declare global {
 const AudioVisualizerContext = React.createContext<AudioVisualizerContextValue>({
   energy: DEFAULT_ENERGY,
   registerAudioElement: () => {},
-  resumeAudio: () => {},
+  resumeAudio: async () => {},
   showCore: false,
   showAnalyzer: false,
   toggleCore: () => {},
@@ -238,16 +238,16 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
     mediaElementRef.current = element;
   }, []);
 
-  const resumeAudio = React.useCallback(() => {
+  const resumeAudio = React.useCallback(async () => {
     const mediaEl = mediaElementRef.current;
-    if (mediaEl && !audioContextRef.current) {
+    if (mediaEl && !audioContextRef.current && (showCore || showAnalyzer)) {
       setupAnalyser(mediaEl);
     }
 
     if (audioContextRef.current?.state === "suspended") {
-      void audioContextRef.current.resume();
+      await audioContextRef.current.resume().catch(() => undefined);
     }
-  }, [setupAnalyser]);
+  }, [setupAnalyser, showAnalyzer, showCore]);
 
   const registerAudioElement = React.useCallback(
     (element: HTMLMediaElement | null) => {
@@ -258,7 +258,7 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
       mediaElementRef.current = element;
 
       const resume = () => {
-        resumeAudio();
+        void resumeAudio();
       };
 
       element.addEventListener("play", resume);
@@ -273,6 +273,20 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
     },
     [resumeAudio],
   );
+
+  React.useEffect(() => {
+    if (!showCore && !showAnalyzer) {
+      return;
+    }
+
+    const mediaEl = mediaElementRef.current;
+    if (!mediaEl) {
+      return;
+    }
+
+    setupAnalyser(mediaEl);
+    void resumeAudio();
+  }, [resumeAudio, setupAnalyser, showAnalyzer, showCore]);
 
   React.useEffect(() => {
     mountedRef.current = true;
@@ -387,7 +401,7 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
 
   React.useEffect(() => {
     const wakeAudio = () => {
-      resumeAudio();
+      void resumeAudio();
     };
 
     const onVisibility = () => {

@@ -178,9 +178,14 @@ export function MusicVisualizerPlayer() {
           audio.src = selected;
           audio.load();
         }
+        await resumeAudio();
         await audio.play();
-      } catch {
-        // blocked until user interaction
+      } catch (error) {
+        const message = error instanceof DOMException && error.name === "NotAllowedError"
+          ? "Clique encore une fois pour autoriser la lecture audio."
+          : "Impossible de lancer la lecture audio.";
+        setPlaybackError(message);
+        setIsPlaying(false);
       }
       return;
     }
@@ -220,7 +225,7 @@ export function MusicVisualizerPlayer() {
           <button
             type="button"
             onClick={() => {
-              resumeAudio();
+              void resumeAudio();
               void togglePlayback();
             }}
             className="inline-flex h-7 w-7 items-center justify-center rounded-lg border border-border/65 bg-background/72 text-foreground transition-colors hover:bg-muted/60 hover:text-emerald-500"
@@ -274,7 +279,7 @@ export function MusicVisualizerPlayer() {
             <select
               value={selected}
               onChange={(event) => {
-                resumeAudio();
+                void resumeAudio();
                 triedTracksRef.current.clear();
                 setShouldLoadAudio(false);
                 setSelected(event.target.value);
@@ -303,8 +308,8 @@ export function MusicVisualizerPlayer() {
         className={collapsed ? "sr-only" : "mt-1.5 w-full"}
         controls={!collapsed}
         preload="metadata"
-        onPlay={resumeAudio}
-        onVolumeChange={resumeAudio}
+        onPlay={() => void resumeAudio()}
+        onVolumeChange={() => void resumeAudio()}
       />
     </div>
   );

@@ -10,7 +10,6 @@ export type MusicFile = {
 };
 
 const ALLOWED_EXT = new Set([".mp3", ".wav", ".ogg", ".m4a", ".aac", ".flac"]);
-const ONLY_TRACK_PATTERN = /dead[\s_-]*blonde/i;
 
 function toLabel(filename: string): string {
   const base = filename.replace(/\.[^.]+$/, "");
@@ -26,16 +25,13 @@ export async function listMusicFiles(): Promise<MusicFile[]> {
     .filter((name) => ALLOWED_EXT.has(path.extname(name).toLowerCase()))
     .sort((a, b) => a.localeCompare(b, "fr", { sensitivity: "base" }));
 
-  const onlyDeadBlonde = names.filter((name) => ONLY_TRACK_PATTERN.test(name));
-  const finalNames = onlyDeadBlonde.length > 0 ? onlyDeadBlonde : names;
-
-  return finalNames.map((name, index) => ({
-      index,
-      name,
-      label: toLabel(name),
-      extension: path.extname(name).toLowerCase(),
-      absolutePath: path.join(musicDir, name),
-    }));
+  return names.map((name, index) => ({
+    index,
+    name,
+    label: toLabel(name),
+    extension: path.extname(name).toLowerCase(),
+    absolutePath: path.join(musicDir, name),
+  }));
 }
 
 export function getAudioContentType(ext: string): string {
