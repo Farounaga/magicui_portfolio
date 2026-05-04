@@ -6,10 +6,7 @@ import { Header } from "@/sections/header";
 import { Footer } from "@/sections/footer";
 import { ThemeProvider } from "next-themes";
 import { ScrollProgress } from "@/components/scroll-progress"
-import { AudioVisualizerProvider } from "@/components/audio-visualizer-context";
-import { MusicVisualizerPlayer } from "@/components/music-visualizer-player";
-import { DeferredVisualEffects } from "@/components/deferred-visual-effects";
-import { FloatingTimer } from "@/components/floating-timer";
+import { ClientEffectsShell } from "@/components/client-effects-shell";
 
 const geistMono = GeistMono;
 const geistSans = GeistSans;
@@ -40,16 +37,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AudioVisualizerProvider>
-            <DeferredVisualEffects />
-            <div className="relative z-10">
-              <Header />
-              {children}
-              <Footer />
-            </div>
-            <FloatingTimer />
-            <MusicVisualizerPlayer />
-          </AudioVisualizerProvider>
+          <ClientEffectsShell />
+          <div className="relative z-10">
+            <Header />
+            {children}
+            <Footer />
+          </div>
         </ThemeProvider>
       </body>
     </html>

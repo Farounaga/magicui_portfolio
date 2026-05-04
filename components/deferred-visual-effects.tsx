@@ -1,9 +1,19 @@
 "use client";
 
 import * as React from "react";
-import { SectionParticlesBackground } from "@/components/section-particles-background";
-import SplashCursor from "@/components/SplashCursor";
-import { CultDitheringOrnaments } from "@/components/cult-dithering-ornaments";
+import dynamic from "next/dynamic";
+
+const SectionParticlesBackground = dynamic(
+  () => import("@/components/section-particles-background").then((mod) => mod.SectionParticlesBackground),
+  { ssr: false },
+);
+
+const SplashCursor = dynamic(() => import("@/components/SplashCursor"), { ssr: false });
+
+const CultDitheringOrnaments = dynamic(
+  () => import("@/components/cult-dithering-ornaments").then((mod) => mod.CultDitheringOrnaments),
+  { ssr: false },
+);
 
 const CURSOR_TRAIL_STORAGE_KEY = "vs_cursor_trail_enabled_v2";
 const CURSOR_TRAIL_EVENT = "vs-cursor-trail-toggle";
