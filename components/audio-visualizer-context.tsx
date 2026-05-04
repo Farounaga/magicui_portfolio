@@ -277,6 +277,14 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
   React.useEffect(() => {
     mountedRef.current = true;
 
+    if (!showCore && !showAnalyzer) {
+      smoothedRef.current = DEFAULT_ENERGY;
+      setEnergy(DEFAULT_ENERGY);
+      return () => {
+        mountedRef.current = false;
+      };
+    }
+
     const tick = () => {
       const analyser = analyserRef.current;
       const values = dataRef.current;
@@ -363,7 +371,7 @@ export function AudioVisualizerProvider({ children }: { children: React.ReactNod
       mountedRef.current = false;
       window.cancelAnimationFrame(rafRef.current);
     };
-  }, []);
+  }, [showAnalyzer, showCore]);
 
   React.useEffect(() => {
     if (autoConfiguredRef.current || typeof window === "undefined") {

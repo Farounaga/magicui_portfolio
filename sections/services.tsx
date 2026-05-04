@@ -21,11 +21,14 @@ function InvertingHeading({
 }) {
     const ref = React.useRef<HTMLButtonElement>(null);
     const [clips, setClips] = React.useState<ClipRect[]>([]);
+    const lastSignatureRef = React.useRef("");
 
     React.useEffect(() => {
         let frame = 0;
+        const timeouts: number[] = [];
 
         const updateClips = () => {
+            frame = 0;
             const heading = ref.current;
             if (!heading) {
                 return;
@@ -71,20 +74,38 @@ function InvertingHeading({
                 })
                 .filter((clip): clip is ClipRect => Boolean(clip));
 
-            setClips(nextClips);
+            const signature = nextClips
+                .map((clip) => `${Math.round(clip.top)}:${Math.round(clip.right)}:${Math.round(clip.bottom)}:${Math.round(clip.left)}`)
+                .join("|");
+
+            if (signature !== lastSignatureRef.current) {
+                lastSignatureRef.current = signature;
+                setClips(nextClips);
+            }
         };
 
-        const tick = () => {
-            updateClips();
-            frame = window.requestAnimationFrame(tick);
+        const scheduleUpdate = () => {
+            if (frame) {
+                return;
+            }
+            frame = window.requestAnimationFrame(updateClips);
         };
 
-        frame = window.requestAnimationFrame(tick);
-        window.addEventListener("resize", updateClips);
+        scheduleUpdate();
+        timeouts.push(window.setTimeout(scheduleUpdate, 500));
+        timeouts.push(window.setTimeout(scheduleUpdate, 1500));
+        window.addEventListener("scroll", scheduleUpdate, { passive: true });
+        window.addEventListener("resize", scheduleUpdate);
+        window.addEventListener("load", scheduleUpdate);
 
         return () => {
-            window.cancelAnimationFrame(frame);
-            window.removeEventListener("resize", updateClips);
+            if (frame) {
+                window.cancelAnimationFrame(frame);
+            }
+            timeouts.forEach((timeout) => window.clearTimeout(timeout));
+            window.removeEventListener("scroll", scheduleUpdate);
+            window.removeEventListener("resize", scheduleUpdate);
+            window.removeEventListener("load", scheduleUpdate);
         };
     }, []);
 

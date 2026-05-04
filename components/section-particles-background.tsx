@@ -184,6 +184,10 @@ export function SectionParticlesBackground() {
   }, [showAnalyzer]);
 
   React.useEffect(() => {
+    if (!showCore && !showAnalyzer) {
+      return;
+    }
+
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
     reducedMotionRef.current = media.matches;
 
@@ -981,7 +985,11 @@ export function SectionParticlesBackground() {
       window.removeEventListener("resize", resize);
       media.removeEventListener("change", onMedia);
     };
-  }, []);
+  }, [showAnalyzer, showCore]);
+
+  if (!showCore && !showAnalyzer) {
+    return null;
+  }
 
   return (
     <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
