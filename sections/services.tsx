@@ -135,7 +135,7 @@ function InvertingHeading({
 
 export function Services () {
     const headingClassName =
-        "cursor-pointer font-bold uppercase tracking-tight";
+        "max-w-[calc(100vw-1rem)] cursor-pointer whitespace-normal break-words text-center font-bold uppercase leading-none tracking-tight";
 
     return (
         <section className="bg-background">
@@ -171,6 +171,7 @@ export function Services () {
                         sizes="(max-width: 640px) 95vw, (max-width: 1024px) 48vw, 31vw"
                         src="/images/services/bigscreenmeme.webp"
                         alt="showcase"
+                        unoptimized
                     />
                     </ParallaxItem>
 
@@ -186,6 +187,7 @@ export function Services () {
                             className="object-contain"
                             src="/images/services/code-screen.webp"
                             alt="showcase"
+                            unoptimized
                         />
                     </ParallaxItem>
 
@@ -201,6 +203,7 @@ export function Services () {
                             className="object-contain"
                             src="/images/services/debug-meme.webp"
                             alt="showcase"
+                            unoptimized
                         />
                     </ParallaxItem>
 
@@ -216,6 +219,7 @@ export function Services () {
                             className="object-contain"
                             src="/images/services/blue-desk.webp"
                             alt="showcase"
+                            unoptimized
                         />
                     </ParallaxItem>
 
@@ -231,6 +235,7 @@ export function Services () {
                             className="object-contain"
                             src="/images/services/web-code.webp"
                             alt="showcase"
+                            unoptimized
                         />
                     </ParallaxItem>
                 </PrallaxContainer>

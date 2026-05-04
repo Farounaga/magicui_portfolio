@@ -228,12 +228,27 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+    overflow-wrap: anywhere;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  a,
+  button,
+  span,
+  li {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 }
 
 @layer components {
   .filter-pill {
-    @apply pointer-events-auto inline-flex min-h-9 items-center justify-center rounded-full border border-border/75 bg-background/88 px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] text-foreground/82 shadow-[0_8px_26px_-20px_rgba(0,0,0,0.72)] transition-colors hover:border-emerald-400/65 hover:bg-emerald-400/8 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70;
+    @apply pointer-events-auto inline-flex min-h-9 max-w-full items-center justify-center whitespace-normal break-words rounded-full border border-border/75 bg-background/88 px-4 py-2 text-center text-xs font-medium uppercase leading-relaxed tracking-[0.12em] text-foreground/82 shadow-[0_8px_26px_-20px_rgba(0,0,0,0.72)] transition-colors hover:border-emerald-400/65 hover:bg-emerald-400/8 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70;
   }
 
   .filter-pill-active {

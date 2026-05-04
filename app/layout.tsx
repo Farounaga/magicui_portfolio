@@ -7,6 +7,7 @@ import { Footer } from "@/sections/footer";
 import { ThemeProvider } from "next-themes";
 import { ScrollProgress } from "@/components/scroll-progress"
 import { ClientEffectsShell } from "@/components/client-effects-shell";
+import { StartupReveal } from "@/components/startup-reveal";
 
 const geistMono = GeistMono;
 const geistSans = GeistSans;
@@ -37,12 +38,14 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClientEffectsShell />
-          <div className="relative z-10">
-            <Header />
-            {children}
-            <Footer />
-          </div>
+          <StartupReveal>
+            <ClientEffectsShell />
+            <div className="relative z-10">
+              <Header />
+              {children}
+              <Footer />
+            </div>
+          </StartupReveal>
         </ThemeProvider>
       </body>
     </html>

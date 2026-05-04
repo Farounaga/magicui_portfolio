@@ -57,6 +57,8 @@ export function Hero () {
                             sizes="(max-width: 468px) 30vw, 200px"
                             src="https://i.giphy.com/TFPdmm3rdzeZ0kP3zG.webp"
                             alt="vs"
+                            priority
+                            unoptimized
                         />
                         </a>
                     </motion.div>
